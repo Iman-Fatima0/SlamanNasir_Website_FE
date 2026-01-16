@@ -1,131 +1,131 @@
-# Elcandi Website
+# Elcandi Website - Frontend
 
-Arabic Course Website - Front-end Application
+Arabic Course Website - React Frontend Application
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18+ and npm/yarn
+- Backend API running on `http://localhost:3000`
+
+### Installation
+
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Create `.env` file (copy from `.env.example`):
+```bash
+cp .env.example .env
+```
+
+3. Update `.env` with your backend API URL:
+```env
+VITE_API_URL=http://localhost:3000/api
+VITE_BACKEND_URL=http://localhost:3000
+VITE_FRONTEND_URL=http://localhost:3001
+```
+
+4. Start development server:
+```bash
+npm run dev
+```
+
+The application will be available at `http://localhost:3001`
 
 ## 📁 Project Structure
 
 ```
-Elcandi_Website/
-├── src/                          # Source code
-│   ├── components/               # React/Vue/Angular components
-│   │   ├── common/              # Reusable UI components
-│   │   ├── features/            # Feature-specific components
-│   │   └── forms/               # Form components
-│   ├── layouts/                 # Layout components
-│   ├── pages/                   # Page components and routes
-│   │   └── api/                 # API route handlers
-│   ├── hooks/                   # Custom React hooks
-│   ├── services/                # API services and integrations
-│   ├── store/                   # State management
-│   ├── utils/                   # Utility functions
-│   ├── types/                   # TypeScript type definitions
-│   ├── constants/               # Application constants
-│   ├── assets/                  # Static assets (source)
-│   │   ├── images/
-│   │   ├── fonts/
-│   │   ├── icons/
-│   │   └── videos/
-│   └── styles/                  # Global styles and themes
-│       ├── components/
-│       ├── layouts/
-│       ├── themes/
-│       └── utilities/
-├── public/                      # Public static files
-│   ├── icons/
-│   ├── images/
-│   ├── fonts/
-│   └── videos/
-├── config/                      # Configuration files
-├── scripts/                     # Build and deployment scripts
-├── tests/                       # Test files
-│   ├── unit/
-│   ├── integration/
-│   └── e2e/
-├── docs/                        # Documentation
-├── .github/                     # GitHub configuration
-│   └── workflows/               # GitHub Actions workflows
-└── README.md                    # This file
+src/
+├── components/          # React components
+│   ├── common/         # Reusable UI components
+│   ├── features/       # Feature-specific components
+│   ├── forms/          # Form components
+│   └── layout/         # Layout components (Header, Footer)
+├── pages/              # Page components
+├── services/           # API services
+├── constants/          # Application constants
+├── styles/             # Global styles
+├── utils/              # Utility functions
+├── hooks/              # Custom React hooks
+├── store/              # State management
+└── App.jsx             # Main app component
 ```
 
-## 🎯 Directory Descriptions
+## 🎨 Color Scheme
 
-### `/src`
-Main source code directory containing all application logic, components, and styles.
+The application uses the following color palette:
 
-### `/src/components`
-- **common/**: Shared, reusable UI components (Button, Input, Card, Modal, etc.)
-- **features/**: Feature-specific components (CourseCard, LessonList, etc.)
-- **forms/**: Form-related components (LoginForm, RegistrationForm, etc.)
+- **Primary**: `#424C61` (Dark blue)
+- **Secondary**: `#A38B5D` (Gold/Bronze)
+- **Font Primary**: `#121212` (Near black)
+- **Stroke**: `#F5F3ED` (Light cream)
+- **Shadow**: `#E7E7E7` (Light gray)
 
-### `/src/layouts`
-Layout components that define page structure (MainLayout, AuthLayout, DashboardLayout, etc.)
+## 🛠️ Technology Stack
 
-### `/src/pages`
-Page-level components and routes. The `api/` subdirectory contains API route handlers.
+- **React 18** - UI library
+- **Vite** - Build tool and dev server
+- **React Router** - Routing
+- **Tailwind CSS** - Styling
+- **Axios** - HTTP client
+- **React Query** - Data fetching and caching
+- **React Icons** - Icon library
 
-### `/src/hooks`
-Custom React hooks (or composables/services for Vue/Angular) for reusable logic.
+## 📝 Available Scripts
 
-### `/src/services`
-API services, external integrations, and data fetching logic.
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
 
-### `/src/store`
-State management (Redux, Zustand, Pinia, Vuex, NgRx, etc.).
+## 🎯 Features
 
-### `/src/utils`
-Utility functions, helpers, formatters, and validators.
+- ✅ Home page with hero section and featured courses
+- ✅ Courses page with filters and pagination
+- ✅ Responsive design (mobile-first)
+- ✅ Modern UI with Tailwind CSS
+- ✅ API integration with backend
+- ✅ Loading and error states
+- ✅ Search and filter functionality
 
-### `/src/types`
-TypeScript type definitions, interfaces, and type declarations.
+## 📚 API Integration
 
-### `/src/constants`
-Application-wide constants (routes, API endpoints, messages, config values).
+The frontend connects to the backend API at the URL specified in `.env`.
 
-### `/src/assets`
-Source assets that may be processed during build (images, fonts, icons, videos).
+Key endpoints:
+- `GET /api/courses` - Get all courses
+- `GET /api/courses?limit=6&isPublished=true` - Get featured courses
+- `GET /api/courses/:id` - Get course details
 
-### `/src/styles`
-Global styles, themes, CSS modules, styled-components, or SCSS files.
+## 🔧 Development
 
-### `/public`
-Static files served directly by the web server (favicon, robots.txt, etc.).
+### Adding New Components
 
-### `/config`
-Build tool and application configuration files (webpack, vite, tailwind, eslint, etc.).
+1. Create component in appropriate folder under `src/components/`
+2. Export from component file
+3. Import where needed
 
-### `/scripts`
-Build scripts, deployment scripts, and automation tools.
+### Adding New Pages
 
-### `/tests`
-Test files organized by test type (unit, integration, e2e).
+1. Create page component in `src/pages/`
+2. Add route in `src/App.jsx`
+3. Add navigation link in `src/components/layout/Header.jsx`
 
-### `/docs`
-Project documentation, guides, and specifications.
+## 📦 Build for Production
 
-### `/.github`
-GitHub-specific configuration including workflows for CI/CD.
+```bash
+npm run build
+```
 
-## 🚀 Getting Started
+The production build will be in the `dist/` folder.
 
-1. Install dependencies
-2. Configure environment variables
-3. Run development server
-4. Build for production
+## 🤝 Contributing
 
-## 📝 Best Practices
+Follow the existing code structure and naming conventions.
 
-- Follow the established folder structure
-- Keep components small and focused
-- Use TypeScript for type safety
-- Write tests for critical functionality
-- Document complex logic
-- Follow naming conventions (PascalCase for components, camelCase for utilities)
+## 📄 License
 
-## 🔧 Technology Stack
-
-[Add your technology stack here]
-- Framework: [React/Vue/Angular/Next.js/etc.]
-- State Management: [Redux/Zustand/Pinia/etc.]
-- Styling: [CSS Modules/Tailwind CSS/styled-components/etc.]
-- Testing: [Jest/Vitest/Cypress/etc.]
-- Build Tool: [Vite/Webpack/Parcel/etc.]
+[Your License Here]

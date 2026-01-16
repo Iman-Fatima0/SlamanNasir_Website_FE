@@ -1,0 +1,94 @@
+Build a Next.js 14+ frontend application for an Arabic Course Website with the following specifications:
+
+## Core Features Required:
+
+### 1. Home Page (/) 
+- Hero section with large heading "Learn Arabic with Expert Instructors", subheading, and "Browse Courses" CTA button
+- Featured Courses section displaying 6-8 courses in a horizontal scroll or 3-column grid using course cards
+- Header component with logo, navigation links (Home, Courses, About), and Login/Signup buttons on the right
+- Footer component with company info, links, and social media icons
+- "View More Products" button at the bottom that links to /courses page
+
+### 2. Courses/Products Page (/courses)
+- Display ALL courses fetched from backend API in a responsive card grid (3 columns desktop, 2 tablet, 1 mobile)
+- Each course card must show:
+  * Course thumbnail/image
+  * Course title
+  * Instructor name
+  * Price (formatted)
+  * Level badge (Beginner/Intermediate/Advanced)
+  * Language
+  * Rating stars (if available)
+  * Brief description
+- Filter functionality: Search input, Level dropdown, Language dropdown
+- Pagination controls
+- Clicking a card navigates to /courses/[id]
+
+### 3. Backend Integration
+- API Base URL: http://localhost:3000/api
+- Use Axios for API calls
+- Key endpoints:
+  * GET /api/courses?limit=6&isPublished=true (for home page featured courses)
+  * GET /api/courses?page=1&limit=12&level=Beginner&language=Arabic (for courses page with filters)
+  * GET /api/courses/:id (for course details)
+- All courses are managed via admin dashboard (frontend is read-only)
+
+### 4. Technology Stack
+- Next.js 14+ with App Router
+- TypeScript
+- Tailwind CSS for styling
+- Axios for API calls
+- React Icons for icons
+
+### 5. Project Structure
+Create this structure:
+```
+src/app/
+  ├── layout.tsx (root layout with Header + Footer)
+  ├── page.tsx (home page)
+  └── courses/
+      ├── page.tsx (courses listing)
+      └── [id]/page.tsx (course details - can be basic for now)
+
+src/components/
+  ├── layout/
+  │   ├── Header.tsx
+  │   └── Footer.tsx
+  ├── home/
+  │   ├── HeroSection.tsx
+  │   └── CoursesSection.tsx
+  ├── courses/
+  │   ├── CourseCard.tsx
+  │   ├── CourseGrid.tsx
+  │   └── CourseFilters.tsx
+  └── common/
+      ├── Button.tsx
+      └── LoadingSpinner.tsx
+
+src/services/
+  ├── api.ts (Axios instance with base URL)
+  └── courses.service.ts (API functions)
+
+src/types/
+  └── course.types.ts (TypeScript interfaces)
+```
+
+### 6. Design Requirements
+- Modern, clean, professional design
+- Color scheme: Deep blue/teal (#1e40af or #0d9488) for primary, gold (#f59e0b) for accent
+- Responsive design (mobile-first approach)
+- Smooth hover effects on cards and buttons
+- Rounded corners, subtle shadows
+- Loading states with spinners
+- Error handling with user-friendly messages
+
+### 7. TypeScript Types Needed
+Define Course interface with: id, title, description, thumbnail, price, level, language, instructor (id, name, avatar), rating, totalStudents, isPublished, createdAt, updatedAt
+
+### 8. Environment Variables
+Create .env.local with:
+NEXT_PUBLIC_API_URL=http://localhost:3000/api
+NEXT_PUBLIC_BACKEND_URL=http://localhost:3000
+
+Start by setting up the Next.js project structure, then build the API service layer, followed by the home page components, and finally the courses page. Make sure all API calls are properly typed with TypeScript and handle loading/error states gracefully.
+

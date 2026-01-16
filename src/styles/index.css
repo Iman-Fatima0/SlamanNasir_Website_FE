@@ -3,8 +3,61 @@
  * Main stylesheet entry point
  */
 
-/* CSS Reset/Normalize */
-/* Variables */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Galea Font */
+@font-face {
+  font-family: 'Galea';
+  src: url('/src/assets/fonts/Galea.woff2') format('woff2'),
+       url('/src/assets/fonts/Galea.woff') format('woff'),
+       url('/src/assets/fonts/Galea.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Base styles */
-/* Utilities */
+@layer base {
+  body {
+    @apply font-sans text-font-primary bg-white antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold text-font-primary;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Custom utilities */
+@layer utilities {
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hide scrollbar */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* Hide scrollbar for Firefox */
+html {
+  scrollbar-width: none;
+}
+
+/* Hide scrollbar for IE and Edge */
+body {
+  -ms-overflow-style: none;
+}
 
