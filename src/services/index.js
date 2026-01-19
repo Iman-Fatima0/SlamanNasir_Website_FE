@@ -8,4 +8,6 @@ export * from './courses.service.js';
 export * from './auth.service.js';
 export * from './instructors.service.js';
 export * from './admin.service.js';
+export * from './student.service.js';
+export * from './instructor-analytics.service.js';
 

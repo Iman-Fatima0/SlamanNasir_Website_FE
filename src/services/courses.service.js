@@ -91,22 +91,46 @@ export class CoursesService {
    * Get a single course by ID
    */
   static async getCourseById(id) {
-    const response = await apiClient.get(
-      API_ENDPOINTS.COURSE_BY_ID(id)
-    );
+    try {
+      const response = await apiClient.get(
+        API_ENDPOINTS.COURSE_BY_ID(id)
+      );
 
-    if (response.success === false) {
-      throw new Error(response.message || 'Failed to fetch course');
+      if (response.success === false) {
+        throw new Error(response.message || 'Failed to fetch course');
+      }
+
+      // Transform backend data to frontend format
+      return {
+        ...response,
+        data: {
+          ...response.data,
+          course: mapCourse(response.data),
+        },
+      };
+    } catch (error) {
+      // Log error for debugging
+      console.error('Error fetching course:', error);
+      
+      // Check if it's a 500 server error
+      if (error.status === 500 || error.response?.status === 500) {
+        const errorObj = new Error(error.message || 'Server error. Please try again later.');
+        errorObj.status = 500;
+        throw errorObj;
+      }
+      
+      // Provide more specific error message for database schema errors
+      if (error.message?.includes('does not exist') || error.message?.includes('column')) {
+        const errorObj = new Error('Database configuration error. Please contact support.');
+        errorObj.status = 500;
+        throw errorObj;
+      }
+      
+      // Re-throw with original message and status
+      const errorObj = new Error(error.message || 'Failed to fetch course');
+      errorObj.status = error.status || error.response?.status || 500;
+      throw errorObj;
     }
-
-    // Transform backend data to frontend format
-    return {
-      ...response,
-      data: {
-        ...response.data,
-        course: mapCourse(response.data),
-      },
-    };
   }
 }
 

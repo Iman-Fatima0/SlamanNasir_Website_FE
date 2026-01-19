@@ -14,9 +14,13 @@ export const ROUTES = {
   ADMIN: {
     DASHBOARD: '/admin',
     USERS: '/admin/users',
+    USER_PROFILE: (id) => `/admin/users/${id}`,
     COURSES: '/admin/courses',
     INSTRUCTORS: '/admin/instructors',
     ORDERS: '/admin/orders',
+    ANALYTICS: '/admin/analytics',
+    MARKETING: '/admin/marketing',
+    SETTINGS: '/admin/settings',
   },
 };
 

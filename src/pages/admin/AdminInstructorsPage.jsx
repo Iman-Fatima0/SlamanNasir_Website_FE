@@ -2,12 +2,10 @@
  * Admin Instructors Management Page
  */
 
-import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { AdminService, InstructorsService } from '@/services';
+import { AdminService } from '@/services';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { ErrorMessage } from '@/components/common/ErrorMessage';
-import { AdminRoute } from '@/components/common/AdminRoute';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '@/constants';
@@ -15,11 +13,10 @@ import { FiPlus, FiEdit, FiTrash2, FiUser } from 'react-icons/fi';
 
 const AdminInstructorsContent = () => {
   const queryClient = useQueryClient();
-  const [showCreateForm, setShowCreateForm] = useState(false);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['adminInstructors'],
-    queryFn: () => InstructorsService.getAllInstructors({ limit: 100 }),
+    queryFn: () => AdminService.getInstructors({ limit: 100 }),
   });
 
   const deleteInstructorMutation = useMutation({
@@ -29,21 +26,13 @@ const AdminInstructorsContent = () => {
     },
   });
 
-  const instructors = data?.data?.instructors || [];
+  const instructors = data?.instructors || data?.data?.instructors || [];
 
   const handleDelete = (id, name) => {
-    if (window.confirm(`Are you sure you want to delete instructor "${name}"?`)) {
+    if (globalThis.confirm(`Are you sure you want to delete instructor "${name}"?`)) {
       deleteInstructorMutation.mutate(id);
     }
   };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner size="lg" />
-      </div>
-    );
-  }
 
   return (
     <AdminLayout>
@@ -54,7 +43,10 @@ const AdminInstructorsContent = () => {
             <p className="text-gray-600">Create, edit, and manage instructors</p>
           </div>
           <button
-            onClick={() => setShowCreateForm(true)}
+            onClick={() => {
+              // TODO: Implement create instructor form/modal
+              globalThis.alert('Create instructor functionality coming soon');
+            }}
             className="bg-secondary-dark text-white px-6 py-3 rounded-lg hover:bg-secondary-dark/90 transition-colors flex items-center gap-2"
           >
             <FiPlus size={20} />
@@ -62,16 +54,31 @@ const AdminInstructorsContent = () => {
           </button>
         </div>
 
-        {error && (
-          <ErrorMessage
-            message={error.message || 'Failed to load instructors'}
-            className="mb-6"
-          />
+        {isLoading && (
+          <div className="flex items-center justify-center py-12">
+            <LoadingSpinner size="lg" />
+          </div>
         )}
 
-        {/* Instructors Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {instructors.map((instructor) => (
+        {error && !isLoading && (
+          <div className="mb-6">
+            <ErrorMessage
+              message={
+                error.message?.includes('404') || error.message?.includes('Not Found')
+                  ? 'Instructors endpoint not found. Please ensure the backend API endpoint /api/admin/instructors is implemented.'
+                  : error.message || 'Failed to load instructors'
+              }
+              className="mb-6"
+            />
+          </div>
+        )}
+
+        {!error && !isLoading && (
+          <>
+            {/* Instructors Grid */}
+            {instructors.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {instructors.map((instructor) => (
             <div key={instructor.id} className="bg-white rounded-xl shadow-sm border border-stroke p-6">
               <div className="flex items-center gap-4 mb-4">
                 {instructor.avatarUrl ? (
@@ -114,20 +121,24 @@ const AdminInstructorsContent = () => {
                   <FiTrash2 size={16} />
                 </button>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {instructors.length === 0 && !isLoading && (
-          <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-stroke">
-            <p className="text-gray-600 mb-4">No instructors found</p>
-            <button
-              onClick={() => setShowCreateForm(true)}
-              className="bg-secondary-dark text-white px-6 py-3 rounded-lg hover:bg-secondary-dark/90 transition-colors"
-            >
-              Add Your First Instructor
-            </button>
-          </div>
+                </div>
+              ))}
+              </div>
+            ) : (
+              <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-stroke">
+                <p className="text-gray-600 mb-4">No instructors found</p>
+                <button
+                  onClick={() => {
+                    // TODO: Implement create instructor form/modal
+                    globalThis.alert('Create instructor functionality coming soon');
+                  }}
+                  className="bg-secondary-dark text-white px-6 py-3 rounded-lg hover:bg-secondary-dark/90 transition-colors"
+                >
+                  Add Your First Instructor
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </AdminLayout>
@@ -135,11 +146,7 @@ const AdminInstructorsContent = () => {
 };
 
 export const AdminInstructorsPage = () => {
-  return (
-    <AdminRoute>
-      <AdminInstructorsContent />
-    </AdminRoute>
-  );
+  return <AdminInstructorsContent />;
 };
 
 export default AdminInstructorsPage;

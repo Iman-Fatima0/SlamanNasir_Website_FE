@@ -2,12 +2,12 @@
  * Main App component with routing
  */
 
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { ScrollIndicator } from '@/components/common/ScrollIndicator';
+import { ROUTES } from '@/constants';
 import { HomePage } from '@/pages/HomePage';
 import { CoursesPage } from '@/pages/CoursesPage';
 import { CourseDetailPage } from '@/pages/CourseDetailPage';
@@ -22,8 +22,12 @@ import { AdminUsersPage } from '@/pages/admin/AdminUsersPage';
 import { AdminCoursesPage } from '@/pages/admin/AdminCoursesPage';
 import { AdminInstructorsPage } from '@/pages/admin/AdminInstructorsPage';
 import { AdminOrdersPage } from '@/pages/admin/AdminOrdersPage';
+import { AdminAnalyticsPage } from '@/pages/admin/AdminAnalyticsPage';
+import { AdminMarketingPage } from '@/pages/admin/AdminMarketingPage';
+import { AdminSettingsPage } from '@/pages/admin/AdminSettingsPage';
+import { AdminUserProfilePage } from '@/pages/admin/AdminUserProfilePage';
 import { AuthProvider } from '@/context/AuthContext';
-import { ROUTES } from '@/constants';
+import { AdminRoute } from '@/components/common/AdminRoute';
 
 // Create a query client
 const queryClient = new QueryClient({
@@ -36,35 +40,48 @@ const queryClient = new QueryClient({
   },
 });
 
+const AppContent = () => {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      {!isAdminRoute && <Header />}
+      {!isAdminRoute && <ScrollIndicator />}
+      <main className="flex-grow">
+        <Routes>
+          <Route path={ROUTES.HOME} element={<HomePage />} />
+          <Route path={ROUTES.COURSES} element={<CoursesPage />} />
+          <Route path={ROUTES.COURSE_DETAIL(':id')} element={<CourseDetailPage />} />
+          <Route path={ROUTES.INSTRUCTORS} element={<InstructorsPage />} />
+          <Route path={ROUTES.INSTRUCTOR_DETAIL(':id')} element={<InstructorDetailPage />} />
+          <Route path={ROUTES.LOGIN} element={<LoginPage />} />
+          <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
+          <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
+          <Route path="/auth/callback" element={<OAuthCallbackPage />} />
+          {/* Admin Routes */}
+          <Route path={ROUTES.ADMIN.DASHBOARD} element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />
+          <Route path={ROUTES.ADMIN.USERS} element={<AdminRoute><AdminUsersPage /></AdminRoute>} />
+          <Route path={ROUTES.ADMIN.COURSES} element={<AdminRoute><AdminCoursesPage /></AdminRoute>} />
+          <Route path={ROUTES.ADMIN.INSTRUCTORS} element={<AdminRoute><AdminInstructorsPage /></AdminRoute>} />
+          <Route path={ROUTES.ADMIN.ORDERS} element={<AdminRoute><AdminOrdersPage /></AdminRoute>} />
+          <Route path={ROUTES.ADMIN.ANALYTICS} element={<AdminRoute><AdminAnalyticsPage /></AdminRoute>} />
+          <Route path={ROUTES.ADMIN.MARKETING} element={<AdminRoute><AdminMarketingPage /></AdminRoute>} />
+          <Route path={ROUTES.ADMIN.SETTINGS} element={<AdminRoute><AdminSettingsPage /></AdminRoute>} />
+          <Route path={ROUTES.ADMIN.USER_PROFILE(':id')} element={<AdminRoute><AdminUserProfilePage /></AdminRoute>} />
+        </Routes>
+      </main>
+      {!isAdminRoute && <Footer />}
+    </div>
+  );
+};
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <BrowserRouter>
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <ScrollIndicator />
-            <main className="flex-grow">
-              <Routes>
-                <Route path={ROUTES.HOME} element={<HomePage />} />
-                <Route path={ROUTES.COURSES} element={<CoursesPage />} />
-                <Route path={ROUTES.COURSE_DETAIL(':id')} element={<CourseDetailPage />} />
-                <Route path={ROUTES.INSTRUCTORS} element={<InstructorsPage />} />
-                <Route path={ROUTES.INSTRUCTOR_DETAIL(':id')} element={<InstructorDetailPage />} />
-                <Route path={ROUTES.LOGIN} element={<LoginPage />} />
-                <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
-                <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
-                <Route path="/auth/callback" element={<OAuthCallbackPage />} />
-                {/* Admin Routes */}
-                <Route path={ROUTES.ADMIN.DASHBOARD} element={<AdminDashboardPage />} />
-                <Route path={ROUTES.ADMIN.USERS} element={<AdminUsersPage />} />
-                <Route path={ROUTES.ADMIN.COURSES} element={<AdminCoursesPage />} />
-                <Route path={ROUTES.ADMIN.INSTRUCTORS} element={<AdminInstructorsPage />} />
-                <Route path={ROUTES.ADMIN.ORDERS} element={<AdminOrdersPage />} />
-              </Routes>
-            </main>
-            <Footer />
-          </div>
+          <AppContent />
         </BrowserRouter>
       </AuthProvider>
     </QueryClientProvider>

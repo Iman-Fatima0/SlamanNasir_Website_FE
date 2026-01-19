@@ -24,7 +24,8 @@ export default {
         shadow: '#E7E7E7', // Light gray for shadows
       },
       fontFamily: {
-        sans: ['Inknut Antiqua', 'Galea', 'Inter', 'system-ui', 'sans-serif'],
+        sans: ['Imprima', 'Inter', 'system-ui', 'sans-serif'],
+        heading: ['Inknut Antiqua', 'Georgia', 'serif'],
         serif: ['Playfair Display', 'Georgia', 'serif'],
         arabic: ['Cairo', 'Amiri', 'Arial', 'sans-serif'],
       },

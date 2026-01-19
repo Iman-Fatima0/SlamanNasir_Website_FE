@@ -2,21 +2,46 @@
  * Course Detail Page component
  */
 
-import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { CoursesService } from '@/services';
+import { CoursesService, AdminService } from '@/services';
+import { useAuth } from '@/context/AuthContext';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { ErrorMessage } from '@/components/common/ErrorMessage';
 import { Button } from '@/components/common/Button';
-import { FiStar, FiUsers, FiClock, FiBook, FiArrowLeft } from 'react-icons/fi';
+import { FiStar, FiUsers, FiBook, FiArrowLeft } from 'react-icons/fi';
 import { ROUTES } from '@/constants';
 
 export const CourseDetailPage = () => {
   const { id } = useParams();
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
+  
+  // Try admin endpoint first if user is admin, fallback to public endpoint
   const { data, isLoading, error } = useQuery({
-    queryKey: ['course', id],
-    queryFn: () => CoursesService.getCourseById(id),
+    queryKey: ['course', id, isAdmin],
+    queryFn: async () => {
+      // If admin, try admin endpoint first
+      if (isAdmin) {
+        try {
+          const adminData = await AdminService.getCourseById(id);
+          return {
+            ...adminData,
+            data: {
+              ...adminData,
+              course: adminData.course || adminData,
+            },
+          };
+        } catch (adminError) {
+          // If admin endpoint fails, fallback to public endpoint
+          console.warn('Admin endpoint failed, trying public endpoint:', adminError);
+          return CoursesService.getCourseById(id);
+        }
+      }
+      // Regular user, use public endpoint
+      return CoursesService.getCourseById(id);
+    },
+    retry: false, // Don't retry automatically
   });
 
   const course = data?.data?.course || data?.data;
@@ -37,12 +62,33 @@ export const CourseDetailPage = () => {
   }
 
   if (error) {
+    // Check if error is related to database schema or 500 server error
+    const isSchemaError = error.message?.includes('does not exist') || 
+                         error.message?.includes('column') ||
+                         error.message?.includes('type') ||
+                         error.message?.includes('Database configuration') ||
+                         error.status === 500;
+    
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
-        <ErrorMessage
-          message={error.message || 'Failed to load course. Please try again.'}
-          className="max-w-2xl"
-        />
+        <div className="max-w-2xl text-center">
+          <ErrorMessage
+            message={
+              isSchemaError
+                ? 'Course data is temporarily unavailable due to a server error. This may be due to a database configuration issue. Please try again later or contact support.'
+                : error.message || 'Failed to load course. Please try again.'
+            }
+            className="mb-4"
+          />
+          <div className="flex gap-4 justify-center">
+            <Link to={ROUTES.COURSES}>
+              <Button variant="primary">Back to Courses</Button>
+            </Link>
+            <Link to={ROUTES.ADMIN.COURSES}>
+              <Button variant="secondary">Back to Admin</Button>
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
@@ -118,12 +164,12 @@ export const CourseDetailPage = () => {
                       {chapter.description && (
                         <p className="text-gray-600 ml-11">{chapter.description}</p>
                       )}
-                      {chapter.lessons && chapter.lessons.length > 0 && (
+                      {chapter.lessons && Array.isArray(chapter.lessons) && chapter.lessons.length > 0 && (
                         <div className="mt-3 ml-11 space-y-2">
                           {chapter.lessons.map((lesson) => (
-                            <div key={lesson.id} className="flex items-center gap-2 text-sm text-gray-600">
+                            <div key={lesson.id || Math.random()} className="flex items-center gap-2 text-sm text-gray-600">
                               <FiBook className="text-primary" />
-                              <span>{lesson.title}</span>
+                              <span>{lesson.title || 'Untitled Lesson'}</span>
                               {lesson.duration && (
                                 <span className="text-xs text-gray-500">({lesson.duration} min)</span>
                               )}

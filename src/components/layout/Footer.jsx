@@ -1,35 +1,51 @@
 /**
- * Footer component
+ * Footer component with Cleveland image background
  */
 
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { FiFacebook, FiTwitter, FiInstagram, FiLinkedin } from 'react-icons/fi';
 import { ROUTES } from '@/constants';
+import clevelandImage from '@/assets/images/the-cleveland-museum-of-art-k0Z7EnXb1mU-unsplash.jpg';
 
 export const Footer = () => {
   const location = useLocation();
   const currentYear = new Date().getFullYear();
-
   const isHomePage = location.pathname === ROUTES.HOME;
 
   // Determine background color based on route
   const getBackgroundColor = () => {
-    if (location.pathname === ROUTES.COURSES || location.pathname.startsWith(ROUTES.COURSE_DETAIL('').replace(':id', ''))) {
+    if (
+      location.pathname === ROUTES.COURSES ||
+      location.pathname.startsWith(ROUTES.COURSE_DETAIL('').replace(':id', ''))
+    ) {
       return 'bg-secondary-dark';
     }
-    if (location.pathname === ROUTES.INSTRUCTORS || location.pathname.startsWith(ROUTES.INSTRUCTOR_DETAIL('').replace(':id', ''))) {
+    if (
+      location.pathname === ROUTES.INSTRUCTORS ||
+      location.pathname.startsWith(ROUTES.INSTRUCTOR_DETAIL('').replace(':id', ''))
+    ) {
       return 'bg-gray-50';
     }
     if (location.pathname === ROUTES.LOGIN || location.pathname === ROUTES.SIGNUP) {
       return 'bg-white';
     }
-    return 'bg-black'; // Homepage default
+    return 'bg-black';
   };
 
   const backgroundColor = getBackgroundColor();
-  const textColor = backgroundColor === 'bg-white' || backgroundColor === 'bg-gray-50' 
-    ? 'text-font-primary' 
-    : 'text-white';
+  
+  // Determine text color based on background
+  const getTextColor = () => {
+    if (isHomePage) {
+      return 'text-gray-200'; // Darker white/grey-white for homepage
+    }
+    if (backgroundColor === 'bg-white' || backgroundColor === 'bg-gray-50') {
+      return 'text-font-primary';
+    }
+    return 'text-white';
+  };
+  
+  const textColor = getTextColor();
 
   const footerLinks = {
     company: [
@@ -57,15 +73,61 @@ export const Footer = () => {
   ];
 
   return (
-    <footer className={`relative overflow-visible ${isHomePage ? 'bg-black' : backgroundColor} ${textColor}`}>
-        {/* Footer content */}
-      <div className={`relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 ${isHomePage ? 'pt-24 pb-16' : 'py-16'}`}>
+    <footer
+      className={`relative overflow-visible ${
+        isHomePage ? 'bg-transparent' : backgroundColor
+      } ${textColor}`}
+    >
+      {/* Cleveland Image Background - Only on HomePage, extends upward and behind footer */}
+      {isHomePage && (
+        <div
+          className="absolute left-0 right-0 w-full pointer-events-none cleveland-bg-container"
+          style={{
+            top: '-300px',
+            bottom: 0,
+            height: 'calc(100% + 300px)',
+            zIndex: 0,
+          }}
+          aria-hidden="true"
+        >
+          {/* Top fade gradient - blends into courses section (BLACK FADE) */}
+          <div
+            className="absolute top-0 left-0 right-0 pointer-events-none"
+            style={{
+              height: '200px',
+              background:
+                'linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.8) 30%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0.2) 85%, rgba(0, 0, 0, 0) 100%)',
+              zIndex: 2,
+            }}
+            aria-hidden="true"
+          />
+
+          {/* Background Image - full width, extends upward and covers entire footer */}
+          <img
+            src={clevelandImage}
+            alt=""
+            className="w-full h-full object-cover"
+            style={{
+              objectPosition: 'center bottom',
+              zIndex: 1,
+            }}
+            draggable={false}
+            aria-hidden="true"
+          />
+        </div>
+      )}
+
+      {/* Footer Content - Overlay on top */}
+      <div
+        className={`relative z-20 container mx-auto px-4 sm:px-6 lg:px-8 ${
+          isHomePage ? 'pt-12 pb-20' : 'py-16'
+        }`}
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          
           {/* Brand */}
           <div>
             <h3 className={`text-2xl font-bold mb-4 ${textColor}`}>Salman Nasir</h3>
-            <p className={`text-sm ${textColor} opacity-80`}>
+            <p className={`text-sm ${textColor} ${isHomePage ? 'opacity-100' : 'opacity-80'}`}>
               Learn Arabic with expert instructors. Master the language through
               comprehensive courses designed for all levels.
             </p>
@@ -79,7 +141,7 @@ export const Footer = () => {
                 <li key={link.path}>
                   <Link
                     to={link.path}
-                    className={`text-sm ${textColor} opacity-80 hover:opacity-100 transition-colors`}
+                    className={`text-sm ${textColor} ${isHomePage ? 'opacity-100 hover:text-gray-400' : 'opacity-80 hover:opacity-100'} transition-colors`}
                   >
                     {link.label}
                   </Link>
@@ -96,7 +158,7 @@ export const Footer = () => {
                 <li key={link.path}>
                   <Link
                     to={link.path}
-                    className={`text-sm ${textColor} opacity-80 hover:opacity-100 transition-colors`}
+                    className={`text-sm ${textColor} ${isHomePage ? 'opacity-100 hover:text-gray-400' : 'opacity-80 hover:opacity-100'} transition-colors`}
                   >
                     {link.label}
                   </Link>
@@ -113,7 +175,7 @@ export const Footer = () => {
                 <li key={link.path}>
                   <Link
                     to={link.path}
-                    className={`text-sm ${textColor} opacity-80 hover:opacity-100 transition-colors`}
+                    className={`text-sm ${textColor} ${isHomePage ? 'opacity-100 hover:text-gray-400' : 'opacity-80 hover:opacity-100'} transition-colors`}
                   >
                     {link.label}
                   </Link>
@@ -124,8 +186,12 @@ export const Footer = () => {
         </div>
 
         {/* Bottom Section */}
-        <div className={`mt-10 pt-6 border-t ${textColor === 'text-white' ? 'border-white/15' : 'border-gray-300'} flex flex-col md:flex-row items-center justify-between gap-4`}>
-          <div className="flex space-x-4">
+        <div
+          className={`mt-10 pt-6 pb-8 border-t ${
+            textColor === 'text-white' ? 'border-white/15' : 'border-gray-300'
+          } flex flex-col md:flex-row items-center justify-between gap-4`}
+        >
+          <div className="flex space-x-4 mb-4 md:mb-0">
             {socialLinks.map(({ icon: Icon, url, label }) => (
               <a
                 key={label}
@@ -133,20 +199,43 @@ export const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                className={`${textColor} opacity-70 hover:opacity-100 transition-colors`}
+                className={`${textColor} ${isHomePage ? 'opacity-100 hover:text-gray-400' : 'opacity-70 hover:opacity-100'} transition-colors`}
               >
                 <Icon size={20} />
               </a>
             ))}
           </div>
 
-          <p className={`text-sm ${textColor} opacity-60`}>
+          <p className={`text-sm ${textColor} ${isHomePage ? 'opacity-100' : 'opacity-60'}`}>
             © {currentYear} Salman Nasir. All rights reserved.
           </p>
         </div>
       </div>
+
+      {/* Responsive styles for Cleveland image */}
+      {isHomePage && (
+        <style>{`
+          .cleveland-bg-container {
+            top: -250px !important;
+            height: calc(100% + 250px) !important;
+          }
+          @media (min-width: 640px) {
+            .cleveland-bg-container {
+              top: -280px !important;
+              height: calc(100% + 280px) !important;
+            }
+          }
+          @media (min-width: 1024px) {
+            .cleveland-bg-container {
+              top: -300px !important;
+              height: calc(100% + 300px) !important;
+            }
+          }
+        `}</style>
+      )}
     </footer>
   );
 };
 
 export default Footer;
+

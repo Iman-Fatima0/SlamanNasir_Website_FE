@@ -43,15 +43,33 @@ class ApiClient {
 
     // Response interceptor
     this.client.interceptors.response.use(
-      (response) => response,
+      (response) => {
+        // Return full axios response - the get/post/put/delete methods will unwrap it
+        return response;
+      },
       (error) => {
         // Handle common errors
         if (error.response) {
+          // Handle 401 Unauthorized - redirect to login
+          if (error.response.status === 401) {
+            // Clear token and user data
+            if (globalThis.window !== undefined) {
+              globalThis.window.localStorage.removeItem('token');
+              globalThis.window.localStorage.removeItem('user');
+              // Only redirect if not already on login/signup page
+              const currentPath = globalThis.window.location.pathname;
+              if (!currentPath.includes('/login') && !currentPath.includes('/signup')) {
+                globalThis.window.location.href = '/login';
+              }
+            }
+          }
+
           const apiError = {
             success: false,
             message: error.response.data?.message || 'An error occurred',
             error: error.response.data?.error,
             errors: error.response.data?.errors,
+            status: error.response.status,
           };
           return Promise.reject(apiError);
         }

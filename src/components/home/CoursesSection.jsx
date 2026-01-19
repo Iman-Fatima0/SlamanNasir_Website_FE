@@ -52,7 +52,7 @@ export const CoursesSection = () => {
     <section 
       ref={sectionRef}
       data-section="courses"
-      className={`py-20 lg:py-32 bg-black relative overflow-visible transition-all duration-1000 ${
+      className={`pt-20 lg:pt-32 pb-32 lg:pb-40 mb-16 lg:mb-24 bg-black relative overflow-visible transition-all duration-1000 ${
         isVisible 
           ? 'opacity-100 translate-y-0' 
           : 'opacity-0 translate-y-20'
@@ -74,7 +74,7 @@ export const CoursesSection = () => {
       {/* Content Container */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Black Frame Container */}
-        <div className="bg-black rounded-2xl p-6 md:p-8 lg:p-12">
+        <div className="bg-black rounded-2xl p-8 md:p-10 lg:p-16">
           {isLoading && (
             <div className="flex justify-center py-16">
               <LoadingSpinner size="lg" />
@@ -91,7 +91,7 @@ export const CoursesSection = () => {
           {!isLoading && !error && courses.length > 0 && (
             <>
               {/* Courses Gallery - Horizontal Layout */}
-              <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-12 transition-all duration-1000 delay-300 ${
+              <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 mb-16 transition-all duration-1000 delay-300 ${
                 isVisible 
                   ? 'opacity-100 translate-y-0' 
                   : 'opacity-0 translate-y-10'
@@ -148,7 +148,7 @@ export const CoursesSection = () => {
               </div>
 
               {/* View All Button - Neumorphic Style */}
-              <div className={`text-center transition-all duration-1000 delay-500 ${
+              <div className={`text-center mt-8 mb-4 transition-all duration-1000 delay-500 ${
                 isVisible 
                   ? 'opacity-100 translate-y-0' 
                   : 'opacity-0 translate-y-10'

@@ -25,8 +25,28 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold text-font-primary;
+    @apply font-bold text-font-primary font-heading;
     letter-spacing: -0.02em;
+  }
+
+  /* Override all text in admin dashboard to use Imprima instead of Inknut Antiqua */
+  .admin-dashboard,
+  .admin-dashboard *,
+  .admin-dashboard h1,
+  .admin-dashboard h2,
+  .admin-dashboard h3,
+  .admin-dashboard h4,
+  .admin-dashboard h5,
+  .admin-dashboard h6,
+  .admin-dashboard p,
+  .admin-dashboard span,
+  .admin-dashboard div,
+  .admin-dashboard button,
+  .admin-dashboard input,
+  .admin-dashboard select,
+  .admin-dashboard textarea,
+  .admin-dashboard label {
+    font-family: 'Imprima', 'Inter', system-ui, sans-serif !important;
   }
 }
 

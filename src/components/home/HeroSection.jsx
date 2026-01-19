@@ -4,6 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import desertBg from '@/assets/images/wolfgang-hasselmann-pVr6wvUneMk-unsplash.jpg';
+import unionLogo from '@/assets/images/Union.png';
 
 export const HeroSection = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -51,9 +52,16 @@ export const HeroSection = () => {
         }}
       >
         <div className="max-w-4xl ml-auto text-right">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 leading-tight">
-            Learn Arabic the Right Way
-          </h1>
+          <div className="mb-6 flex justify-end">
+            <img 
+              src={unionLogo} 
+              alt="Salman Nasir Logo" 
+              className="h-16 md:h-20 lg:h-24 xl:h-28 w-auto object-contain"
+              style={{
+                filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3))',
+              }}
+            />
+          </div>
           
           <p className="text-lg md:text-xl lg:text-2xl mb-10 text-gray-100 leading-relaxed max-w-2xl ml-auto font-light">
             Master Arabic language with comprehensive courses
