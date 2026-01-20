@@ -3,15 +3,27 @@
  */
 
 import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/context/AuthContext';
 import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/common/Button';
-import { FiUser, FiBook, FiSettings, FiLogOut } from 'react-icons/fi';
+import { LoadingSpinner } from '@/components/common/LoadingSpinner';
+import { ErrorMessage } from '@/components/common/ErrorMessage';
+import { StudentService } from '@/services';
+import { FiUser, FiBook, FiSettings, FiLogOut, FiArrowRight } from 'react-icons/fi';
 import { ROUTES } from '@/constants';
 
 const DashboardContent = () => {
   const { user, logout } = useAuth();
+
+  // Fetch enrolled courses using student endpoint (only shows courses with valid orders)
+  const { data: coursesData, isLoading: isLoadingCourses, error: coursesError } = useQuery({
+    queryKey: ['studentCourses'],
+    queryFn: () => StudentService.getCourses(),
+  });
+
+  const enrolledCourses = coursesData?.courses || [];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -98,13 +110,61 @@ const DashboardContent = () => {
             {/* Enrolled Courses */}
             <div className="bg-white rounded-xl shadow-sm border border-stroke p-8 mt-8">
               <h2 className="text-2xl font-bold text-font-primary mb-6">My Courses</h2>
-              <div className="text-center py-12">
-                <FiBook className="mx-auto text-gray-400 mb-4" size={48} />
-                <p className="text-gray-600 mb-4">You haven't enrolled in any courses yet.</p>
-                <Link to={ROUTES.COURSES}>
-                  <Button variant="primary">Browse Courses</Button>
-                </Link>
-              </div>
+              
+              {isLoadingCourses ? (
+                <div className="flex justify-center items-center py-12">
+                  <LoadingSpinner />
+                </div>
+              ) : coursesError ? (
+                <ErrorMessage
+                  message={coursesError.message || 'Failed to load your courses'}
+                  className="mb-4"
+                />
+              ) : enrolledCourses.length === 0 ? (
+                <div className="text-center py-12">
+                  <FiBook className="mx-auto text-gray-400 mb-4" size={48} />
+                  <p className="text-gray-600 mb-4">You haven't enrolled in any courses yet.</p>
+                  <Link to={ROUTES.COURSES}>
+                    <Button variant="primary">Browse Courses</Button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {enrolledCourses.map((course) => (
+                    <Link
+                      key={course.id}
+                      to={ROUTES.COURSE_DETAIL(course.id)}
+                      className="bg-white border border-stroke rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
+                    >
+                      {course.thumbnailUrl && (
+                        <img
+                          src={course.thumbnailUrl}
+                          alt={course.title}
+                          className="w-full h-48 object-cover"
+                        />
+                      )}
+                      <div className="p-4">
+                        <h3 className="text-lg font-semibold text-font-primary mb-2 line-clamp-2">
+                          {course.title}
+                        </h3>
+                        {course.subtitle && (
+                          <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+                            {course.subtitle}
+                          </p>
+                        )}
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-500">
+                            {course.level || 'All Levels'}
+                          </span>
+                          <span className="flex items-center text-primary font-medium text-sm">
+                            Continue <FiArrowRight className="ml-1" size={16} />
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

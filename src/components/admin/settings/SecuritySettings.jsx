@@ -217,7 +217,11 @@ export const SecuritySettingsContent = () => {
       <div className="flex justify-end pt-4 border-t border-gray-800">
         <button
           type="submit"
-          className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-colors shadow-lg"
+          className="bg-primary rounded-[50px] text-white cursor-pointer text-sm py-2.5 px-6
+            transition-all duration-200 ease-in-out border-2 border-primary/80
+            shadow-[inset_3px_3px_8px_rgba(0,0,0,0.3),inset_-3px_-3px_8px_rgba(255,255,255,0.1)]
+            hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)]
+            focus:outline-none focus:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)] flex items-center gap-2"
         >
           <FiSave size={18} />
           <span>Save Changes</span>

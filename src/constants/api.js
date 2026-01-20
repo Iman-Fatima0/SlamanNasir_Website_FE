@@ -27,6 +27,9 @@ export const API_ENDPOINTS = {
   
   // Student endpoints (auth required)
   STUDENT: {
+    COURSES: '/student/courses',
+    COURSE_BY_ID: (id) => `/student/courses/${id}`,
+    CHECKOUT: '/student/checkout',
     ENROLLMENTS: '/student/enrollments',
     ENROLLMENT_BY_ID: (id) => `/student/enrollments/${id}`,
     PROGRESS_BY_ENROLLMENT: (enrollmentId) => `/student/progress/${enrollmentId}`,
@@ -65,6 +68,21 @@ export const API_ENDPOINTS = {
       COURSES: '/admin/analytics/courses',
       STUDENTS: '/admin/analytics/students',
       FUNNELS: '/admin/analytics/funnels',
+    },
+  },
+  
+  // File Upload endpoints
+  UPLOAD: {
+    VIDEO: '/upload/video',
+    AUDIO: '/upload/audio',
+    PDF: '/upload/pdf',
+    IMAGE: '/upload/image',
+    LESSON: '/upload/lesson',
+    PREVIEW: {
+      VIDEO: (filename) => `/upload/preview/video/${filename}`,
+      AUDIO: (filename) => `/upload/preview/audio/${filename}`,
+      PDF: (filename) => `/upload/preview/pdf/${filename}`,
+      IMAGE: (filename) => `/upload/preview/image/${filename}`,
     },
   },
 };

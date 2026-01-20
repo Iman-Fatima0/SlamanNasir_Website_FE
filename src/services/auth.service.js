@@ -97,31 +97,44 @@ export class AuthService {
 
   /**
    * OAuth login - redirects to provider
+   * @param {string} courseId - Optional courseId to include in state for checkout flow
+   * 
+   * Note: OAuth redirects must use full backend URL (not proxy) because window.location.href
+   * needs to navigate away from the current page. Backend is at http://localhost:3000
    */
-  static googleLogin() {
-    window.location.href = `${API_BASE_URL}${API_ENDPOINTS.AUTH.GOOGLE}`;
+  static googleLogin(courseId = null) {
+    const state = courseId ? `?state=${encodeURIComponent(courseId)}` : '';
+    // Always use full backend URL for OAuth redirects (backend port 3000)
+    const oauthUrl = `${API_BASE_URL}/api${API_ENDPOINTS.AUTH.GOOGLE}${state}`;
+    globalThis.location.href = oauthUrl;
   }
 
-  static facebookLogin() {
-    window.location.href = `${API_BASE_URL}${API_ENDPOINTS.AUTH.FACEBOOK}`;
+  static facebookLogin(courseId = null) {
+    const state = courseId ? `?state=${encodeURIComponent(courseId)}` : '';
+    const oauthUrl = `${API_BASE_URL}/api${API_ENDPOINTS.AUTH.FACEBOOK}${state}`;
+    globalThis.location.href = oauthUrl;
   }
 
-  static linkedinLogin() {
-    window.location.href = `${API_BASE_URL}${API_ENDPOINTS.AUTH.LINKEDIN}`;
+  static linkedinLogin(courseId = null) {
+    const state = courseId ? `?state=${encodeURIComponent(courseId)}` : '';
+    const oauthUrl = `${API_BASE_URL}/api${API_ENDPOINTS.AUTH.LINKEDIN}${state}`;
+    globalThis.location.href = oauthUrl;
   }
 
-  static appleLogin() {
-    window.location.href = `${API_BASE_URL}${API_ENDPOINTS.AUTH.APPLE}`;
+  static appleLogin(courseId = null) {
+    const state = courseId ? `?state=${encodeURIComponent(courseId)}` : '';
+    const oauthUrl = `${API_BASE_URL}/api${API_ENDPOINTS.AUTH.APPLE}${state}`;
+    globalThis.location.href = oauthUrl;
   }
 
   /**
    * Logout - clear token
    */
   static logout() {
-    if (typeof window !== 'undefined') {
+    if (typeof globalThis !== 'undefined' && globalThis.window) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/';
+      globalThis.location.href = '/';
     }
   }
 }

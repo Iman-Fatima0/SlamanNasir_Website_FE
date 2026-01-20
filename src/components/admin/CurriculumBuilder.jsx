@@ -5,6 +5,7 @@
 
 import { useState } from 'react';
 import { FiPlus, FiEdit, FiTrash2, FiChevronDown, FiChevronRight, FiLock, FiUnlock, FiMenu } from 'react-icons/fi';
+import { LessonEditor } from './LessonEditor';
 
 export const CurriculumBuilder = ({ courseId, chapters = [], onUpdate }) => {
   const [expandedSections, setExpandedSections] = useState({});
@@ -83,9 +84,17 @@ export const CurriculumBuilder = ({ courseId, chapters = [], onUpdate }) => {
       if (section.id === sectionId) {
         return {
           ...section,
-          lessons: section.lessons.map((lesson) =>
-            lesson.id === lessonId ? { ...lesson, [field]: value } : lesson
-          ),
+          lessons: section.lessons.map((lesson) => {
+            if (lesson.id === lessonId) {
+              // If value is an object (from LessonEditor), merge it
+              if (field === null && typeof value === 'object') {
+                return { ...lesson, ...value };
+              }
+              // Otherwise, update specific field
+              return { ...lesson, [field]: value };
+            }
+            return lesson;
+          }),
         };
       }
       return section;
@@ -99,7 +108,11 @@ export const CurriculumBuilder = ({ courseId, chapters = [], onUpdate }) => {
         <h3 className="text-lg font-semibold text-white">Curriculum</h3>
         <button
           onClick={handleAddSection}
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-colors"
+          className="bg-primary rounded-[50px] text-white cursor-pointer text-sm py-2.5 px-6
+            transition-all duration-200 ease-in-out border-2 border-primary/80
+            shadow-[inset_3px_3px_8px_rgba(0,0,0,0.3),inset_-3px_-3px_8px_rgba(255,255,255,0.1)]
+            hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)]
+            focus:outline-none focus:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)] flex items-center gap-2"
         >
           <FiPlus size={18} />
           <span>Add Section</span>
@@ -111,7 +124,11 @@ export const CurriculumBuilder = ({ courseId, chapters = [], onUpdate }) => {
           <p className="text-gray-400 mb-4">No sections yet</p>
           <button
             onClick={handleAddSection}
-            className="px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-colors"
+            className="bg-primary rounded-[50px] text-white cursor-pointer text-sm py-2.5 px-6
+              transition-all duration-200 ease-in-out border-2 border-primary/80
+              shadow-[inset_3px_3px_8px_rgba(0,0,0,0.3),inset_-3px_-3px_8px_rgba(255,255,255,0.1)]
+              hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)]
+              focus:outline-none focus:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)]"
           >
             Add Your First Section
           </button>
@@ -163,61 +180,86 @@ export const CurriculumBuilder = ({ courseId, chapters = [], onUpdate }) => {
               {expandedSections[section.id] && (
                 <div className="p-4 space-y-2">
                   {section.lessons?.map((lesson) => (
-                    <div
-                      key={lesson.id}
-                      className="flex items-center gap-3 p-3 bg-gray-800 rounded-lg border border-gray-700"
-                    >
-                      <FiMenu className="text-gray-500 cursor-move" size={18} />
-                      <input
-                        type="text"
-                        value={lesson.title || ''}
-                        onChange={(e) => handleUpdateLesson(section.id, lesson.id, 'title', e.target.value)}
-                        className="flex-1 px-3 py-1 bg-gray-900 border border-gray-700 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Lesson Title"
-                      />
-                      <select
-                        value={lesson.type || 'video'}
-                        onChange={(e) => handleUpdateLesson(section.id, lesson.id, 'type', e.target.value)}
-                        className="px-3 py-1 bg-gray-900 border border-gray-700 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="video">Video</option>
-                        <option value="pdf">PDF</option>
-                        <option value="audio">Audio</option>
-                        <option value="text">Text</option>
-                        <option value="quiz">Quiz</option>
-                      </select>
-                      <button
-                        onClick={() =>
-                          handleUpdateLesson(section.id, lesson.id, 'isLocked', !lesson.isLocked)
-                        }
-                        className={`p-2 rounded ${
-                          lesson.isLocked
-                            ? 'text-red-400 hover:bg-red-500/20'
-                            : 'text-green-400 hover:bg-green-500/20'
-                        }`}
-                        title={lesson.isLocked ? 'Unlock' : 'Lock'}
-                      >
-                        {lesson.isLocked ? <FiLock size={18} /> : <FiUnlock size={18} />}
-                      </button>
-                      <button
-                        onClick={() =>
-                          handleUpdateLesson(section.id, lesson.id, 'isPreview', !lesson.isPreview)
-                        }
-                        className={`px-3 py-1 text-xs rounded ${
-                          lesson.isPreview
-                            ? 'bg-blue-500/20 text-blue-400'
-                            : 'bg-gray-700 text-gray-400'
-                        }`}
-                      >
-                        {lesson.isPreview ? 'Preview' : 'Locked'}
-                      </button>
-                      <button
-                        onClick={() => handleDeleteLesson(section.id, lesson.id)}
-                        className="p-2 text-red-400 hover:bg-red-500/20 rounded"
-                        title="Delete Lesson"
-                      >
-                        <FiTrash2 size={18} />
-                      </button>
+                    <div key={lesson.id} className="space-y-2">
+                      {/* Lesson Header - Compact View */}
+                      <div className="flex items-center gap-3 p-3 bg-gray-800 rounded-lg border border-gray-700">
+                        <FiMenu className="text-gray-500 cursor-move" size={18} />
+                        <input
+                          type="text"
+                          value={lesson.title || ''}
+                          onChange={(e) => handleUpdateLesson(section.id, lesson.id, 'title', e.target.value)}
+                          className="flex-1 px-3 py-1 bg-gray-900 border border-gray-700 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="Lesson Title"
+                        />
+                        <select
+                          value={lesson.type || 'video'}
+                          onChange={(e) => handleUpdateLesson(section.id, lesson.id, 'type', e.target.value)}
+                          className="px-3 py-1 bg-gray-900 border border-gray-700 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                          <option value="video">Video</option>
+                          <option value="pdf">PDF</option>
+                          <option value="audio">Audio</option>
+                          <option value="text">Text</option>
+                          <option value="quiz">Quiz</option>
+                        </select>
+                        <button
+                          onClick={() =>
+                            handleUpdateLesson(section.id, lesson.id, 'isLocked', !lesson.isLocked)
+                          }
+                          className={`p-2 rounded ${
+                            lesson.isLocked
+                              ? 'text-red-400 hover:bg-red-500/20'
+                              : 'text-green-400 hover:bg-green-500/20'
+                          }`}
+                          title={lesson.isLocked ? 'Unlock' : 'Lock'}
+                        >
+                          {lesson.isLocked ? <FiLock size={18} /> : <FiUnlock size={18} />}
+                        </button>
+                        <button
+                          onClick={() =>
+                            handleUpdateLesson(section.id, lesson.id, 'isPreview', !lesson.isPreview)
+                          }
+                          className={`px-3 py-1 text-xs rounded ${
+                            lesson.isPreview
+                              ? 'bg-blue-500/20 text-blue-400'
+                              : 'bg-gray-700 text-gray-400'
+                          }`}
+                        >
+                          {lesson.isPreview ? 'Preview' : 'Locked'}
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (editingItem === lesson.id) {
+                              setEditingItem(null);
+                            } else {
+                              setEditingItem(lesson.id);
+                            }
+                          }}
+                          className="p-2 text-blue-400 hover:bg-blue-500/20 rounded"
+                          title="Edit Content"
+                        >
+                          <FiEdit size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteLesson(section.id, lesson.id)}
+                          className="p-2 text-red-400 hover:bg-red-500/20 rounded"
+                          title="Delete Lesson"
+                        >
+                          <FiTrash2 size={18} />
+                        </button>
+                      </div>
+                      
+                      {/* Lesson Editor - Expanded View */}
+                      {editingItem === lesson.id && (
+                        <LessonEditor
+                          lesson={lesson}
+                          onUpdate={(updatedLesson) => {
+                            // Keep the editor open while typing; just update the lesson data
+                            handleUpdateLesson(section.id, lesson.id, null, updatedLesson);
+                          }}
+                          onClose={() => setEditingItem(null)}
+                        />
+                      )}
                     </div>
                   ))}
                   {(!section.lessons || section.lessons.length === 0) && (

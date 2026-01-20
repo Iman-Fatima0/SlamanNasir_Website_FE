@@ -47,9 +47,13 @@ const AdminInstructorsContent = () => {
               // TODO: Implement create instructor form/modal
               globalThis.alert('Create instructor functionality coming soon');
             }}
-            className="bg-secondary-dark text-white px-6 py-3 rounded-lg hover:bg-secondary-dark/90 transition-colors flex items-center gap-2"
+            className="bg-primary rounded-[50px] text-white cursor-pointer text-sm py-2.5 px-6
+              transition-all duration-200 ease-in-out border-2 border-primary/80
+              shadow-[inset_3px_3px_8px_rgba(0,0,0,0.3),inset_-3px_-3px_8px_rgba(255,255,255,0.1)]
+              hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)]
+              focus:outline-none focus:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)] flex items-center gap-2"
           >
-            <FiPlus size={20} />
+            <FiPlus size={18} />
             Add Instructor
           </button>
         </div>
@@ -108,7 +112,11 @@ const AdminInstructorsContent = () => {
                   View
                 </Link>
                 <button
-                  className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors flex items-center justify-center gap-2"
+                  className="flex-1 bg-primary rounded-[50px] text-white cursor-pointer text-xs py-1.5 px-4
+                    transition-all duration-200 ease-in-out border-2 border-primary/80
+                    shadow-[inset_2px_2px_6px_rgba(0,0,0,0.3),inset_-2px_-2px_6px_rgba(255,255,255,0.1)]
+                    hover:shadow-[inset_1px_1px_3px_rgba(0,0,0,0.3),inset_-1px_-1px_3px_rgba(255,255,255,0.15),1px_1px_3px_rgba(0,0,0,0.2),-1px_-1px_3px_rgba(255,255,255,0.1)]
+                    focus:outline-none focus:shadow-[inset_1px_1px_3px_rgba(0,0,0,0.3),inset_-1px_-1px_3px_rgba(255,255,255,0.15),1px_1px_3px_rgba(0,0,0,0.2),-1px_-1px_3px_rgba(255,255,255,0.1)] flex items-center justify-center gap-2"
                 >
                   <FiEdit size={16} />
                   Edit
@@ -132,7 +140,11 @@ const AdminInstructorsContent = () => {
                     // TODO: Implement create instructor form/modal
                     globalThis.alert('Create instructor functionality coming soon');
                   }}
-                  className="bg-secondary-dark text-white px-6 py-3 rounded-lg hover:bg-secondary-dark/90 transition-colors"
+                  className="bg-primary rounded-[50px] text-white cursor-pointer text-sm py-2.5 px-6
+                    transition-all duration-200 ease-in-out border-2 border-primary/80
+                    shadow-[inset_3px_3px_8px_rgba(0,0,0,0.3),inset_-3px_-3px_8px_rgba(255,255,255,0.1)]
+                    hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)]
+                    focus:outline-none focus:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)]"
                 >
                   Add Your First Instructor
                 </button>

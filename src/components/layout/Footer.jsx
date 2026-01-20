@@ -20,10 +20,7 @@ export const Footer = () => {
     ) {
       return 'bg-secondary-dark';
     }
-    if (
-      location.pathname === ROUTES.INSTRUCTORS ||
-      location.pathname.startsWith(ROUTES.INSTRUCTOR_DETAIL('').replace(':id', ''))
-    ) {
+        if (location.pathname === ROUTES.ABOUT) {
       return 'bg-gray-50';
     }
     if (location.pathname === ROUTES.LOGIN || location.pathname === ROUTES.SIGNUP) {
@@ -53,11 +50,11 @@ export const Footer = () => {
       { label: 'Contact', path: '/contact' },
       { label: 'Careers', path: '/careers' },
     ],
-    resources: [
-      { label: 'Courses', path: ROUTES.COURSES },
-      { label: 'Instructors', path: ROUTES.INSTRUCTORS },
-      { label: 'Blog', path: '/blog' },
-    ],
+        resources: [
+          { label: 'Courses', path: ROUTES.COURSES },
+          { label: 'About Salman', path: ROUTES.ABOUT },
+          { label: 'Blog', path: '/blog' },
+        ],
     legal: [
       { label: 'Privacy Policy', path: '/privacy' },
       { label: 'Terms of Service', path: '/terms' },

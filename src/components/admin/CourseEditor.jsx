@@ -223,13 +223,21 @@ export const CourseEditor = ({ course, onSave, onCancel }) => {
           <div className="flex items-center justify-end gap-4 mt-8 pt-6 border-t border-gray-800">
             <button
               onClick={onCancel}
-              className="px-6 py-2 border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors text-gray-300"
+              className="bg-gray-700 rounded-[50px] text-white cursor-pointer text-sm py-2.5 px-6
+                transition-all duration-200 ease-in-out border-2 border-gray-600/80
+                shadow-[inset_3px_3px_8px_rgba(0,0,0,0.3),inset_-3px_-3px_8px_rgba(255,255,255,0.1)]
+                hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)]
+                focus:outline-none focus:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)]"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
-              className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-colors shadow-lg"
+              className="bg-primary rounded-[50px] text-white cursor-pointer text-sm py-2.5 px-6
+                transition-all duration-200 ease-in-out border-2 border-primary/80
+                shadow-[inset_3px_3px_8px_rgba(0,0,0,0.3),inset_-3px_-3px_8px_rgba(255,255,255,0.1)]
+                hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)]
+                focus:outline-none focus:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)] flex items-center gap-2"
             >
               <FiSave size={18} />
               <span>Save Course</span>

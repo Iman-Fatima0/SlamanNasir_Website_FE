@@ -11,8 +11,9 @@ import { ROUTES } from '@/constants';
 import { HomePage } from '@/pages/HomePage';
 import { CoursesPage } from '@/pages/CoursesPage';
 import { CourseDetailPage } from '@/pages/CourseDetailPage';
-import { InstructorsPage } from '@/pages/InstructorsPage';
+import { AboutSalmanPage } from '@/pages/AboutSalmanPage';
 import { InstructorDetailPage } from '@/pages/InstructorDetailPage';
+import { CheckoutPage } from '@/pages/CheckoutPage';
 import { LoginPage } from '@/pages/LoginPage';
 import { SignupPage } from '@/pages/SignupPage';
 import { DashboardPage } from '@/pages/DashboardPage';
@@ -48,13 +49,15 @@ const AppContent = () => {
     <div className="flex flex-col min-h-screen">
       {!isAdminRoute && <Header />}
       {!isAdminRoute && <ScrollIndicator />}
-      <main className="flex-grow">
+      <main className={`flex-grow ${!isAdminRoute ? 'pt-24' : ''}`}>
         <Routes>
           <Route path={ROUTES.HOME} element={<HomePage />} />
           <Route path={ROUTES.COURSES} element={<CoursesPage />} />
           <Route path={ROUTES.COURSE_DETAIL(':id')} element={<CourseDetailPage />} />
-          <Route path={ROUTES.INSTRUCTORS} element={<InstructorsPage />} />
-          <Route path={ROUTES.INSTRUCTOR_DETAIL(':id')} element={<InstructorDetailPage />} />
+          <Route path={ROUTES.CHECKOUT(':courseId')} element={<CheckoutPage />} />
+          <Route path={ROUTES.ABOUT} element={<AboutSalmanPage />} />
+          {/* Use explicit path string here to avoid any issues with ROUTES helpers at route definition time */}
+          <Route path="/instructors/:id" element={<InstructorDetailPage />} />
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
           <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
           <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />

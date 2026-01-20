@@ -132,7 +132,11 @@ const AdminUserProfileContent = () => {
                 <p className="text-sm text-gray-500">Role: {user.role || 'Student'}</p>
               </div>
             </div>
-            <button className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors">
+            <button className="bg-primary rounded-[50px] text-white cursor-pointer text-sm py-2.5 px-6
+              transition-all duration-200 ease-in-out border-2 border-primary/80
+              shadow-[inset_3px_3px_8px_rgba(0,0,0,0.3),inset_-3px_-3px_8px_rgba(255,255,255,0.1)]
+              hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)]
+              focus:outline-none focus:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)] flex items-center gap-2">
               <FiEdit size={18} />
               <span>Edit User</span>
             </button>
@@ -267,7 +271,11 @@ const AdminUserProfileContent = () => {
                   className="w-full px-4 py-2 border border-stroke rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   placeholder="Add notes about this user..."
                 />
-                <button className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors">
+                <button className="bg-primary rounded-[50px] text-white cursor-pointer text-sm py-2.5 px-6
+                  transition-all duration-200 ease-in-out border-2 border-primary/80
+                  shadow-[inset_3px_3px_8px_rgba(0,0,0,0.3),inset_-3px_-3px_8px_rgba(255,255,255,0.1)]
+                  hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)]
+                  focus:outline-none focus:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)]">
                   Save Notes
                 </button>
               </div>

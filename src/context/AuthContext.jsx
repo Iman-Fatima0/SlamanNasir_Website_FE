@@ -95,6 +95,22 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const refreshAuth = async () => {
+    try {
+      const response = await AuthService.getMe();
+      if (response.success) {
+        setUser(response.data.user);
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        setIsAuthenticated(true);
+        return { success: true };
+      }
+      return { success: false };
+    } catch (error) {
+      logout();
+      return { success: false };
+    }
+  };
+
   // Check if user is admin
   const isAdmin = user?.role === 'admin' || user?.role === 'Admin';
 
@@ -106,6 +122,7 @@ export const AuthProvider = ({ children }) => {
     login,
     signup,
     logout,
+    refreshAuth,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

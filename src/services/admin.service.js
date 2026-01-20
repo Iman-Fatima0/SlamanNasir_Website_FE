@@ -176,16 +176,25 @@ export class AdminService {
    * Create course
    */
   static async createCourse(courseData) {
-    const response = await apiClient.post(
-      API_ENDPOINTS.ADMIN.COURSES,
-      courseData
-    );
+    try {
+      // Log the data being sent
+      console.log('AdminService.createCourse - Sending data:', JSON.stringify(courseData, null, 2));
+      
+      const response = await apiClient.post(
+        API_ENDPOINTS.ADMIN.COURSES,
+        courseData
+      );
 
-    if (response.success === false) {
-      throw new Error(response.message || 'Failed to create course');
+      if (response.success === false) {
+        throw new Error(response.message || 'Failed to create course');
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error('AdminService.createCourse - Error:', error);
+      // Re-throw with more context
+      throw error;
     }
-
-    return response.data;
   }
 
   /**

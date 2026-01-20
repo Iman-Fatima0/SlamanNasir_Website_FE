@@ -4,8 +4,68 @@
 
 import { apiClient } from './api.js';
 import { API_ENDPOINTS } from '@/constants';
+import { mapCourse, mapCourses } from '@/utils/dataMapper';
 
 export class StudentService {
+  /**
+   * Get all courses the student is enrolled in (order verified)
+   * Returns only courses the user has access to via valid orders/enrollments
+   */
+  static async getCourses() {
+    const response = await apiClient.get(API_ENDPOINTS.STUDENT.COURSES);
+
+    if (response.success === false) {
+      throw new Error(response.message || 'Failed to fetch courses');
+    }
+
+    // Transform backend course data to frontend format
+    const rawCourses = response.data?.courses || response.data?.data?.courses || [];
+    const courses = mapCourses(rawCourses);
+
+    return {
+      courses,
+      ...response.data,
+    };
+  }
+
+  /**
+   * Get course by ID (only if student has access via valid order/enrollment)
+   * Returns full course data with nested chapters and lessons
+   */
+  static async getCourseById(id) {
+    const response = await apiClient.get(API_ENDPOINTS.STUDENT.COURSE_BY_ID(id));
+
+    if (response.success === false) {
+      throw new Error(response.message || 'Failed to fetch course');
+    }
+
+    // Transform backend course data to frontend format
+    const course = mapCourse(response.data?.course || response.data);
+
+    return {
+      ...response.data,
+      course,
+    };
+  }
+
+  /**
+   * Submit manual checkout for a course (creates pending order, no enrollment)
+   * Body matches backend spec:
+   * { courseId, paymentProofUrl, transactionReference, notes }
+   */
+  static async checkout(payload) {
+    const response = await apiClient.post(
+      API_ENDPOINTS.STUDENT.CHECKOUT,
+      payload
+    );
+
+    if (response.success === false) {
+      throw new Error(response.message || 'Failed to submit checkout');
+    }
+
+    return response.data;
+  }
+
   /**
    * Get all student enrollments
    */
@@ -20,7 +80,8 @@ export class StudentService {
   }
 
   /**
-   * Create enrollment
+   * Legacy: direct enrollment creation (now disabled in backend)
+   * Kept only for backward compatibility; will now 403.
    */
   static async createEnrollment(courseId) {
     const response = await apiClient.post(
@@ -28,8 +89,10 @@ export class StudentService {
       { courseId }
     );
 
+    // This will normally return 403 with a message like:
+    // “Direct enrollment creation is disabled. Please complete checkout and wait for admin verification.”
     if (response.success === false) {
-      throw new Error(response.message || 'Failed to create enrollment');
+      throw new Error(response.message || 'Direct enrollment creation is disabled. Please use checkout.');
     }
 
     return response.data;

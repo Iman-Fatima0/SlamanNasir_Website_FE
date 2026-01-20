@@ -2,7 +2,7 @@
  * Course Detail Page component
  */
 
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { CoursesService, AdminService } from '@/services';
 import { useAuth } from '@/context/AuthContext';
@@ -16,6 +16,7 @@ export const CourseDetailPage = () => {
   const { id } = useParams();
   const { user } = useAuth();
   const isAdmin = user?.role === 'admin';
+  const navigate = useNavigate();
   
   // Try admin endpoint first if user is admin, fallback to public endpoint
   const { data, isLoading, error } = useQuery({
@@ -192,7 +193,12 @@ export const CourseDetailPage = () => {
                 <div className="text-4xl font-bold text-primary mb-2">
                   {formatPrice(course.price)}
                 </div>
-                <Button variant="primary" size="lg" className="w-full">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  className="w-full"
+                  onClick={() => navigate(ROUTES.CHECKOUT(id))}
+                >
                   Enroll Now
                 </Button>
               </div>

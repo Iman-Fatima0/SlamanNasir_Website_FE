@@ -28,12 +28,21 @@ const formatDate = (dateString) => {
 const AdminCoursesContent = () => {
   const queryClient = useQueryClient();
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [editingCourse, setEditingCourse] = useState(null);
+  const [editingCourseId, setEditingCourseId] = useState(null);
   const [filters, setFilters] = useState({
     search: '',
     status: '',
     level: '',
   });
+
+  // Fetch full course details when editing (includes nested chapters and lessons)
+  const { data: courseDetails, isLoading: isLoadingCourseDetails } = useQuery({
+    queryKey: ['adminCourse', editingCourseId],
+    queryFn: () => AdminService.getCourseById(editingCourseId),
+    enabled: !!editingCourseId && showCreateForm,
+  });
+
+  const editingCourse = courseDetails?.course || null;
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['adminCourses', filters],
@@ -41,11 +50,28 @@ const AdminCoursesContent = () => {
   });
 
   const createCourseMutation = useMutation({
-    mutationFn: (courseData) => AdminService.createCourse(courseData),
+    mutationFn: (courseData) => {
+      // Log the data being sent for debugging
+      console.log('Creating course with data:', JSON.stringify(courseData, null, 2));
+      return AdminService.createCourse(courseData);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries(['adminCourses']);
       setShowCreateForm(false);
-      setEditingCourse(null);
+      setEditingCourseId(null);
+    },
+    onError: (error) => {
+      console.error('Error creating course:', error);
+      console.error('Error details:', {
+        message: error.message,
+        error: error.error,
+        errors: error.errors,
+        status: error.status,
+      });
+      // Show more detailed error message
+      const errorMessage = error.message || error.error || 'Unknown error';
+      const errorDetails = error.errors ? `\n\nDetails: ${JSON.stringify(error.errors, null, 2)}` : '';
+      globalThis.alert(`Failed to create course: ${errorMessage}${errorDetails}`);
     },
   });
 
@@ -54,7 +80,7 @@ const AdminCoursesContent = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(['adminCourses']);
       setShowCreateForm(false);
-      setEditingCourse(null);
+      setEditingCourseId(null);
     },
   });
 
@@ -74,13 +100,14 @@ const AdminCoursesContent = () => {
   };
 
   const handleEdit = (course) => {
-    setEditingCourse(course);
+    // Fetch full course details with nested chapters and lessons
+    setEditingCourseId(course.id);
     setShowCreateForm(true);
   };
 
   const handleSaveCourse = (courseData) => {
-    if (editingCourse) {
-      updateCourseMutation.mutate({ id: editingCourse.id, data: courseData });
+    if (editingCourseId) {
+      updateCourseMutation.mutate({ id: editingCourseId, data: courseData });
     } else {
       createCourseMutation.mutate(courseData);
     }
@@ -116,7 +143,10 @@ const AdminCoursesContent = () => {
       key: 'price',
       label: 'Price',
       sortable: true,
-      render: (value) => (value != null ? `$${value}` : '$0'),
+      render: (value) => {
+        if (value === null || value === undefined) return '$0';
+        return `$${value}`;
+      },
     },
     {
       key: 'isPublished',
@@ -192,9 +222,13 @@ const AdminCoursesContent = () => {
           </div>
           <button
             onClick={() => setShowCreateForm(true)}
-            className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-colors flex items-center gap-2 shadow-lg"
+            className="bg-primary rounded-[50px] text-white cursor-pointer text-sm py-2.5 px-6
+              transition-all duration-200 ease-in-out border-2 border-primary/80
+              shadow-[inset_3px_3px_8px_rgba(0,0,0,0.3),inset_-3px_-3px_8px_rgba(255,255,255,0.1)]
+              hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)]
+              focus:outline-none focus:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)] flex items-center gap-2"
           >
-            <FiPlus size={20} />
+            <FiPlus size={18} />
             Create Course
           </button>
         </div>
@@ -240,7 +274,11 @@ const AdminCoursesContent = () => {
             </select>
             <button
               onClick={() => setFilters({ search: '', status: '', level: '' })}
-              className="px-4 py-2 border border-gray-700 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center gap-2 text-gray-300"
+              className="bg-primary rounded-[50px] text-white cursor-pointer text-sm py-2.5 px-6
+                transition-all duration-200 ease-in-out border-2 border-primary/80
+                shadow-[inset_3px_3px_8px_rgba(0,0,0,0.3),inset_-3px_-3px_8px_rgba(255,255,255,0.1)]
+                hover:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)]
+                focus:outline-none focus:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.15),2px_2px_4px_rgba(0,0,0,0.2),-2px_-2px_4px_rgba(255,255,255,0.1)] flex items-center justify-center gap-2"
             >
               <FiFilter size={18} />
               Clear Filters
@@ -255,21 +293,27 @@ const AdminCoursesContent = () => {
           emptyMessage="No courses found. Create your first course!"
         />
 
-        {/* Course Editor Modal */}
-        {showCreateForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4">
-            <div className="bg-[#1A1D29] rounded-2xl shadow-2xl w-full max-w-7xl h-[90vh] overflow-hidden border border-gray-800">
-              <CourseEditor
-                course={editingCourse}
-                onSave={handleSaveCourse}
-                onCancel={() => {
-                  setShowCreateForm(false);
-                  setEditingCourse(null);
-                }}
-              />
-            </div>
-          </div>
-        )}
+            {/* Course Editor Modal */}
+            {showCreateForm && (
+              <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center p-4">
+                <div className="bg-[#1A1D29] rounded-2xl shadow-2xl w-full max-w-7xl h-[90vh] overflow-hidden border border-gray-800">
+                  {isLoadingCourseDetails && editingCourseId ? (
+                    <div className="flex items-center justify-center h-full">
+                      <LoadingSpinner size="lg" />
+                    </div>
+                  ) : (
+                    <CourseEditor
+                      course={editingCourse}
+                      onSave={handleSaveCourse}
+                      onCancel={() => {
+                        setShowCreateForm(false);
+                        setEditingCourseId(null);
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+            )}
       </div>
     </AdminLayout>
   );

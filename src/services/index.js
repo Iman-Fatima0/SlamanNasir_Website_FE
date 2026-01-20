@@ -10,4 +10,5 @@ export * from './instructors.service.js';
 export * from './admin.service.js';
 export * from './student.service.js';
 export * from './instructor-analytics.service.js';
+export * from './upload.service.js';
 

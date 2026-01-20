@@ -9,29 +9,41 @@
 export const mapCourse = (course) => {
   if (!course) return null;
 
+  // Handle both nested (product) and flat structures
   const product = course.product || {};
   const instructors = course.instructors || [];
   const primaryInstructor = instructors.find(inst => inst.CourseInstructor?.role === 'primary') || instructors[0] || {};
 
+  // Support both nested and flat structures
+  // If product exists, use it; otherwise use course directly
+  const title = product.title || course.title || '';
+  const subtitle = product.subtitle || course.subtitle || '';
+  const description = product.description || course.description || '';
+  const price = product.price !== undefined ? Number.parseFloat(product.price) : (course.price !== undefined ? Number.parseFloat(course.price) : 0);
+  const currency = product.currency || course.currency || 'USD';
+  const thumbnail = course.thumbnailUrl || product.thumbnailUrl || course.thumbnail || '';
+  const isPublished = product.isPublished !== undefined ? product.isPublished : (course.isPublished !== undefined ? course.isPublished : false);
+  const slug = product.slug || course.slug || '';
+
   return {
     id: course.id,
-    title: product.title || '',
-    subtitle: product.subtitle || '',
-    description: product.description || '',
-    shortDescription: product.subtitle || product.description || '',
-    price: Number.parseFloat(product.price) || 0,
-    currency: product.currency || 'USD',
-    thumbnail: course.thumbnailUrl || product.thumbnailUrl || '',
-    thumbnailUrl: course.thumbnailUrl || product.thumbnailUrl || '',
+    title,
+    subtitle,
+    description,
+    shortDescription: subtitle || description || '',
+    price,
+    currency,
+    thumbnail,
+    thumbnailUrl: thumbnail,
     level: course.level || '',
     language: course.language || '',
     rating: course.rating || 0,
     totalStudents: course.totalStudents || 0,
-    totalChapters: course.totalChapters || 0,
-    totalLessons: course.totalLessons || 0,
+    totalChapters: course.totalChapters || course.chapters?.length || 0,
+    totalLessons: course.totalLessons || course.chapters?.reduce((sum, ch) => sum + (ch.lessons?.length || 0), 0) || 0,
     durationMinutes: course.durationMinutes || 0,
-    isPublished: product.isPublished || false,
-    slug: product.slug || '',
+    isPublished,
+    slug,
     instructor: primaryInstructor ? {
       id: primaryInstructor.id,
       name: `${primaryInstructor.firstName || ''} ${primaryInstructor.lastName || ''}`.trim(),

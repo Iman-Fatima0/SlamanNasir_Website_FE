@@ -53,7 +53,7 @@ export const Header = () => {
   const navLinks = [
     { path: ROUTES.HOME, label: 'Home' },
     { path: ROUTES.COURSES, label: 'Courses' },
-    { path: ROUTES.INSTRUCTORS, label: 'Instructors' },
+    { path: ROUTES.ABOUT, label: 'About Salman' },
   ];
 
   const isActive = (path) => location.pathname === path;

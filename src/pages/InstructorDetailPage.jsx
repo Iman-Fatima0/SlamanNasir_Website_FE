@@ -46,7 +46,7 @@ export const InstructorDetailPage = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-font-primary mb-4">Instructor not found</h2>
-          <Link to={ROUTES.INSTRUCTORS}>
+          <Link to={ROUTES.HOME}>
             <button className="px-6 py-2 bg-primary text-white rounded-lg">Browse Instructors</button>
           </Link>
         </div>
@@ -60,7 +60,7 @@ export const InstructorDetailPage = () => {
       <div className="bg-primary text-white pt-20 md:pt-24">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <Link
-            to={ROUTES.INSTRUCTORS}
+            to={ROUTES.HOME}
             className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors"
           >
             <FiArrowLeft />
