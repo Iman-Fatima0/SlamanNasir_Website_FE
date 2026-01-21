@@ -31,8 +31,8 @@ export const CoursesSection = () => {
         });
       },
       {
-        threshold: 0.1, // Trigger when 10% of the section is visible
-        rootMargin: '-100px 0px', // Start animation slightly before it's fully visible
+        threshold: 0.2, // Trigger when 20% of the section is visible
+        rootMargin: '-50px 0px', // Start animation when section is 50px into viewport
       }
     );
 
@@ -57,6 +57,9 @@ export const CoursesSection = () => {
           ? 'opacity-100 translate-y-0' 
           : 'opacity-0 translate-y-20'
       }`}
+      style={{
+        minHeight: '100vh',
+      }}
     >
       {/* Blurred top edge for blending with hero section */}
       <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black/80 via-black/40 to-transparent backdrop-blur-sm z-0"></div>

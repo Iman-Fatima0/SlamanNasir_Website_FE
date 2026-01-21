@@ -21,14 +21,14 @@ export const HeroSection = () => {
 
   return (
     <section 
-      className="relative flex items-center justify-center text-white overflow-hidden -mt-16 pt-16 md:-mt-20 md:pt-20"
+      className="relative flex items-center justify-center text-white overflow-hidden"
       style={{
         height: '100vh',
         minHeight: '100vh',
         width: '100%',
         backgroundImage: `url(${desertBg})`,
         backgroundSize: 'cover',
-        backgroundPosition: 'center bottom', // ensure full dunes image, no black band
+        backgroundPosition: 'center center',
         backgroundRepeat: 'no-repeat',
         transform: `translateY(${scrollY * 0.3}px)`,
         transition: 'transform 0.1s ease-out',

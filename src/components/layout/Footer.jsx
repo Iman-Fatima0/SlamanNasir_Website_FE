@@ -46,8 +46,7 @@ export const Footer = () => {
 
   const footerLinks = {
     company: [
-      { label: 'About Us', path: '/about' },
-      { label: 'Contact', path: '/contact' },
+      { label: 'About Salman', path: ROUTES.ABOUT },
     ],
     resources: [
       { label: 'Courses', path: ROUTES.COURSES },
