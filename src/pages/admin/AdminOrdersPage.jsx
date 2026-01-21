@@ -251,21 +251,21 @@ const AdminOrdersContent = () => {
             <div className="space-y-6">
               {/* Order Timeline */}
               <div>
-                <h3 className="text-sm font-medium text-gray-600 mb-3">Timeline</h3>
+                <h3 className="text-sm font-medium text-amber-300 mb-3">Timeline</h3>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
                     <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                     <div>
-                      <p className="text-sm font-medium text-font-primary">Order Created</p>
-                      <p className="text-xs text-gray-600">{formatDate(selectedOrder.createdAt)}</p>
+                      <p className="text-sm font-medium text-gray-400">Order Created</p>
+                      <p className="text-xs text-gray-400">{formatDate(selectedOrder.createdAt)}</p>
                     </div>
                   </div>
                   {selectedOrder.status === 'completed' && (
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                       <div>
-                        <p className="text-sm font-medium text-font-primary">Payment Completed</p>
-                        <p className="text-xs text-gray-600">{formatDate(selectedOrder.updatedAt)}</p>
+                        <p className="text-sm font-medium text-gray-400">Payment Completed</p>
+                        <p className="text-xs text-gray-400">{formatDate(selectedOrder.updatedAt)}</p>
                       </div>
                     </div>
                   )}
@@ -273,8 +273,8 @@ const AdminOrdersContent = () => {
                     <div className="flex items-center gap-3">
                       <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                       <div>
-                        <p className="text-sm font-medium text-font-primary">Refunded</p>
-                        <p className="text-xs text-gray-600">{formatDate(selectedOrder.updatedAt)}</p>
+                        <p className="text-sm font-medium text-gray-400">Refunded</p>
+                        <p className="text-xs text-gray-400">{formatDate(selectedOrder.updatedAt)}</p>
                       </div>
                     </div>
                   )}
@@ -283,31 +283,82 @@ const AdminOrdersContent = () => {
 
               {/* User Info */}
               <div>
-                <h3 className="text-sm font-medium text-gray-600 mb-2">Customer</h3>
-                <p className="text-font-primary font-medium">
+                <h3 className="text-sm font-medium text-amber-300 mb-2">Customer</h3>
+                <p className="text-gray-400 font-medium">
                   {selectedOrder.user?.firstName} {selectedOrder.user?.lastName}
                 </p>
-                <p className="text-sm text-gray-600">{selectedOrder.user?.email}</p>
+                <p className="text-sm text-sky-400 font-medium break-all">
+                  {selectedOrder.user?.email}
+                </p>
               </div>
 
               {/* Course Info */}
               <div>
-                <h3 className="text-sm font-medium text-gray-600 mb-2">Course</h3>
-                <p className="text-font-primary font-medium">
+                <h3 className="text-sm font-medium text-amber-300 mb-2">Course</h3>
+                <p className="text-gray-400 font-medium">
                   {selectedOrder.product?.title || selectedOrder.course?.title || 'N/A'}
                 </p>
               </div>
 
               {/* Payment Info */}
               <div>
-                <h3 className="text-sm font-medium text-gray-600 mb-2">Payment</h3>
-                <p className="text-2xl font-bold text-font-primary">
+                <h3 className="text-sm font-medium text-amber-300 mb-2">Payment</h3>
+                <p className="text-2xl font-bold text-emerald-400">
                   {formatCurrency(selectedOrder.totalAmount || selectedOrder.amount)}
                 </p>
-                <p className="text-sm text-gray-600 mt-1">
-                  Status: <span className="font-medium">{selectedOrder.status}</span>
+                <p className="text-sm text-gray-400 mt-1">
+                  Status:{' '}
+                  <span className="font-medium text-emerald-300">
+                    {selectedOrder.status}
+                  </span>
                 </p>
               </div>
+
+              {/* Payment Proof (manual payment screenshot) */}
+              {(() => {
+                // Support multiple possible backend field names/locations
+                const paymentProof =
+                  selectedOrder.paymentProofUrl ||
+                  selectedOrder.payment_proof_url ||
+                  selectedOrder.paymentProof ||
+                  selectedOrder.manualPaymentProofUrl ||
+                  selectedOrder.proofUrl ||
+                  selectedOrder.paymentScreenshotUrl ||
+                  selectedOrder.metadata?.paymentProofUrl ||
+                  selectedOrder.metadata?.payment_proof_url;
+
+                if (!paymentProof) return null;
+
+                return (
+                  <div>
+                    <h3 className="text-sm font-medium text-amber-300 mb-2">
+                      Payment proof
+                    </h3>
+                    <div className="space-y-3">
+                      {/* Preview */}
+                      <div className="border border-stroke rounded-lg overflow-hidden bg-gray-50">
+                        <div className="max-h-64 overflow-hidden flex items-center justify-center bg-black/5">
+                          <img
+                            src={paymentProof}
+                            alt="Payment proof"
+                            className="w-full object-contain"
+                          />
+                        </div>
+                      </div>
+                      {/* Download / open in new tab */}
+                      <a
+                        href={paymentProof}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 underline"
+                      >
+                        <FiDownload size={16} />
+                        <span>Open / download payment proof</span>
+                      </a>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Actions */}
               <div className="pt-4 border-t border-stroke space-y-3">

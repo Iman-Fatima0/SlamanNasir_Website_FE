@@ -219,7 +219,7 @@ export const CheckoutPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center pt-24 md:pt-28">
         <LoadingSpinner size="lg" />
       </div>
     );
@@ -227,7 +227,7 @@ export const CheckoutPage = () => {
 
   if (error || !course) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="min-h-screen flex items-center justify-center px-4 pt-24 md:pt-28">
         <div className="max-w-xl w-full">
           <ErrorMessage
             message={error?.message || 'Course not found. Please go back and try again.'}
@@ -244,7 +244,7 @@ export const CheckoutPage = () => {
   // After successful checkout, show thank-you / awaiting verification state
   if (submittedOrder) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 pt-24 md:pt-28">
         <div className="max-w-xl w-full bg-white rounded-2xl shadow-lg border border-stroke p-8">
           <h1 className="text-2xl font-bold text-font-primary mb-4">
             Thank you! Your payment is under review.
@@ -286,7 +286,7 @@ export const CheckoutPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10">
+    <div className="min-h-screen bg-gray-50 py-10 pt-24 md:pt-28">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           {/* Left: Course summary - matching design */}

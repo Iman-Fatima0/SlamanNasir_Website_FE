@@ -54,7 +54,7 @@ const AdminUsersContent = () => {
       label: 'Name',
       sortable: true,
       render: (_, row) => (
-        <div className="font-medium text-font-primary">
+        <div className="font-medium text-white">
           {row.firstName} {row.lastName}
         </div>
       ),

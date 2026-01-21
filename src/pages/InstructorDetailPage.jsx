@@ -55,13 +55,13 @@ export const InstructorDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 -mt-16 pt-16 md:-mt-20 md:pt-20">
       {/* Header */}
-      <div className="bg-primary text-white pt-20 md:pt-24">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="bg-primary text-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 max-w-7xl">
           <Link
             to={ROUTES.HOME}
-            className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors"
+            className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors text-sm md:text-base"
           >
             <FiArrowLeft />
             <span>Back to Instructors</span>
@@ -95,8 +95,8 @@ export const InstructorDetailPage = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
           {/* Main Content */}
           <div className="lg:col-span-2">
             {/* Bio */}

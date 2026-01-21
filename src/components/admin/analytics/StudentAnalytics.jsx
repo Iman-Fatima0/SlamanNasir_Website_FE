@@ -60,12 +60,13 @@ export const StudentAnalytics = () => {
   const activeStudentsGrowth = summary.activeStudentsGrowth || 0;
   const completionRateGrowth = summary.completionRateGrowth || 0;
 
-  // Student engagement data from backend
-  const engagementData = data?.engagement || [];
+  // Student engagement data from backend - ensure it's always an array
+  const engagementData = Array.isArray(data?.engagement) ? data.engagement : [];
 
   // Student activity by day of week from backend
   const formatActivityByDay = () => {
-    const activity = data?.activityByDay || [];
+    const rawActivity = data?.activityByDay;
+    const activity = Array.isArray(rawActivity) ? rawActivity : [];
     
     return activity.map((item) => ({
       day: item.day ? item.day.substring(0, 3) : 'Mon', // Shorten to 3 letters

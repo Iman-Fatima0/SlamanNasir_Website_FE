@@ -12,6 +12,9 @@ import { HomePage } from '@/pages/HomePage';
 import { CoursesPage } from '@/pages/CoursesPage';
 import { CourseDetailPage } from '@/pages/CourseDetailPage';
 import { AboutSalmanPage } from '@/pages/AboutSalmanPage';
+import { PrivacyPolicyPage } from '@/pages/PrivacyPolicyPage';
+import { TermsOfServicePage } from '@/pages/TermsOfServicePage';
+import { CookiePolicyPage } from '@/pages/CookiePolicyPage';
 import { InstructorDetailPage } from '@/pages/InstructorDetailPage';
 import { CheckoutPage } from '@/pages/CheckoutPage';
 import { LoginPage } from '@/pages/LoginPage';
@@ -44,18 +47,31 @@ const queryClient = new QueryClient({
 const AppContent = () => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+  const isHomePage = location.pathname === ROUTES.HOME;
+  const isCoursesPage = location.pathname === ROUTES.COURSES || location.pathname.startsWith(ROUTES.COURSE_DETAIL('').replace(':id', ''));
+  const isAboutPage = location.pathname === ROUTES.ABOUT;
+  const isAuthPage = location.pathname === ROUTES.LOGIN || location.pathname === ROUTES.SIGNUP;
+  const isInstructorDetailPage = location.pathname.startsWith('/instructors/');
+  const isDashboardPage = location.pathname === ROUTES.DASHBOARD;
+  const isCheckoutPage = location.pathname.startsWith('/checkout/');
+  
+  // Pages that extend background behind navbar don't need padding
+  const pagesWithExtendedBackground = isHomePage || isCoursesPage || isAboutPage || isAuthPage || isInstructorDetailPage || isDashboardPage || isCheckoutPage;
 
   return (
     <div className="flex flex-col min-h-screen">
       {!isAdminRoute && <Header />}
       {!isAdminRoute && <ScrollIndicator />}
-      <main className={`flex-grow ${!isAdminRoute ? 'pt-24' : ''}`}>
+      <main className={`flex-grow ${!isAdminRoute && !pagesWithExtendedBackground ? 'pt-24' : ''}`}>
         <Routes>
           <Route path={ROUTES.HOME} element={<HomePage />} />
           <Route path={ROUTES.COURSES} element={<CoursesPage />} />
           <Route path={ROUTES.COURSE_DETAIL(':id')} element={<CourseDetailPage />} />
           <Route path={ROUTES.CHECKOUT(':courseId')} element={<CheckoutPage />} />
           <Route path={ROUTES.ABOUT} element={<AboutSalmanPage />} />
+          <Route path={ROUTES.PRIVACY} element={<PrivacyPolicyPage />} />
+          <Route path={ROUTES.TERMS} element={<TermsOfServicePage />} />
+          <Route path={ROUTES.COOKIES} element={<CookiePolicyPage />} />
           {/* Use explicit path string here to avoid any issues with ROUTES helpers at route definition time */}
           <Route path="/instructors/:id" element={<InstructorDetailPage />} />
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />

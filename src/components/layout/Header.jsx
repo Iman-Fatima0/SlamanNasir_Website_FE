@@ -7,6 +7,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { FiMenu, FiX } from 'react-icons/fi';
 import { ROUTES } from '@/constants';
 import { useAuth } from '@/context/AuthContext';
+import unionLogo from '@/assets/images/Union.png';
 
 export const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -18,12 +19,16 @@ export const Header = () => {
   // Check page type for styling
   const isHomePage = location.pathname === ROUTES.HOME;
   const isCoursesPage = location.pathname === ROUTES.COURSES;
+  const isCourseDetailPage = location.pathname.startsWith('/courses/');
   
   // Determine text color based on page background
-  // Brown pages (courses) use white text, others use dark text
-  const isDarkPage = isHomePage || isCoursesPage;
-  const textColor = isDarkPage ? 'text-white' : 'text-font-primary';
-  const textColorHover = isDarkPage ? 'text-white/80 hover:text-white' : 'text-font-primary hover:text-primary';
+  // Dark pages (home, courses list) use white text
+  // Course detail page should use dark brown text
+  const isDarkPage = (isHomePage || isCoursesPage) && !isCourseDetailPage;
+  const textColor = isCourseDetailPage ? 'text-[#2B211A]' : (isDarkPage ? 'text-white' : 'text-font-primary');
+  const textColorHover = isCourseDetailPage
+    ? 'text-[#2B211A] hover:text-primary'
+    : (isDarkPage ? 'text-white/80 hover:text-white' : 'text-font-primary hover:text-primary');
   const textShadow = isDarkPage ? { textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)' } : {};
 
   // Handle scroll detection
@@ -61,20 +66,21 @@ export const Header = () => {
   // Render transparent header on all pages
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 z-50 bg-transparent transition-transform duration-300 ease-in-out ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ease-in-out ${
         isVisible ? 'translate-y-0' : '-translate-y-full'
       }`}
+      style={{ backgroundColor: 'transparent', background: 'transparent' }}
     >
-      <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <nav className="container mx-auto px-4 sm:px-6 lg:px-8" style={{ backgroundColor: 'transparent' }}>
         <div className="flex items-center justify-between h-16 md:h-20">
-          {/* Logo - Placeholder */}
+          {/* Logo */}
           <Link to={ROUTES.HOME} className="flex items-center">
-            <div className={`w-10 h-10 backdrop-blur-sm border rounded-lg flex items-center justify-center ${
-              isDarkPage 
-                ? 'bg-white/20 border-white/30' 
-                : 'bg-primary/20 border-primary/30'
-            }`}>
-              <span className={`font-bold text-lg ${textColor}`}>S</span>
+            <div className="h-10 md:h-12 w-auto flex items-center">
+              <img
+                src={unionLogo}
+                alt="Salman Nasir"
+                className="h-full w-auto object-contain drop-shadow-md"
+              />
             </div>
           </Link>
 

@@ -7,20 +7,76 @@ import { useState } from 'react';
 import { FiSave, FiFileText } from 'react-icons/fi';
 
 export const LegalSettingsContent = () => {
-  const [formData, setFormData] = useState({
-    termsOfService: '',
-    privacyPolicy: '',
-    cookiePolicy: '',
-    refundPolicy: '',
-    userAgreement: '',
-    companyName: '',
-    businessRegistration: '',
-    taxId: '',
-    legalAddress: '',
-    gdprEnabled: false,
-    cookieConsentRequired: true,
-    dataRetentionDays: 365,
-  });
+  const loadInitialState = () => {
+    if (typeof window === 'undefined') {
+      return {
+        termsOfService: '',
+        privacyPolicy: '',
+        cookiePolicy: '',
+        refundPolicy: '',
+        userAgreement: '',
+        companyName: '',
+        businessRegistration: '',
+        taxId: '',
+        legalAddress: '',
+        gdprEnabled: false,
+        cookieConsentRequired: true,
+        dataRetentionDays: 365,
+      };
+    }
+
+    try {
+      const stored = window.localStorage.getItem('legalSettings');
+      if (!stored) {
+        return {
+          termsOfService: '',
+          privacyPolicy: '',
+          cookiePolicy: '',
+          refundPolicy: '',
+          userAgreement: '',
+          companyName: '',
+          businessRegistration: '',
+          taxId: '',
+          legalAddress: '',
+          gdprEnabled: false,
+          cookieConsentRequired: true,
+          dataRetentionDays: 365,
+        };
+      }
+      const parsed = JSON.parse(stored);
+      return {
+        termsOfService: parsed.termsOfService || '',
+        privacyPolicy: parsed.privacyPolicy || '',
+        cookiePolicy: parsed.cookiePolicy || '',
+        refundPolicy: parsed.refundPolicy || '',
+        userAgreement: parsed.userAgreement || '',
+        companyName: parsed.companyName || '',
+        businessRegistration: parsed.businessRegistration || '',
+        taxId: parsed.taxId || '',
+        legalAddress: parsed.legalAddress || '',
+        gdprEnabled: !!parsed.gdprEnabled,
+        cookieConsentRequired: parsed.cookieConsentRequired !== false,
+        dataRetentionDays: parsed.dataRetentionDays || 365,
+      };
+    } catch {
+      return {
+        termsOfService: '',
+        privacyPolicy: '',
+        cookiePolicy: '',
+        refundPolicy: '',
+        userAgreement: '',
+        companyName: '',
+        businessRegistration: '',
+        taxId: '',
+        legalAddress: '',
+        gdprEnabled: false,
+        cookieConsentRequired: true,
+        dataRetentionDays: 365,
+      };
+    }
+  };
+
+  const [formData, setFormData] = useState(loadInitialState);
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -28,8 +84,17 @@ export const LegalSettingsContent = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Saving legal settings:', formData);
-    alert('Legal settings saved! (This is a placeholder - connect to backend API)');
+    try {
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('legalSettings', JSON.stringify(formData));
+      }
+      // eslint-disable-next-line no-alert
+      alert('Legal settings saved and will appear on the public legal pages.');
+    } catch (err) {
+      // eslint-disable-next-line no-alert
+      alert('Failed to save legal settings locally.');
+      console.error('Error saving legal settings to localStorage', err);
+    }
   };
 
   return (

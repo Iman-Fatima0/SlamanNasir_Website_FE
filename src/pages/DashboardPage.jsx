@@ -26,16 +26,16 @@ const DashboardContent = () => {
   const enrolledCourses = coursesData?.courses || [];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 -mt-16 pt-16 md:-mt-20 md:pt-20">
       {/* Header */}
-      <div className="bg-primary text-white py-12 pt-24 md:pt-28">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold mb-2">Dashboard</h1>
-          <p className="text-xl text-gray-200">Welcome back, {user?.firstName || 'User'}!</p>
+      <div className="bg-primary text-white py-12 md:py-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-3 leading-tight">Dashboard</h1>
+          <p className="text-lg md:text-xl text-gray-200">Welcome back, {user?.firstName || 'User'}!</p>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-1">

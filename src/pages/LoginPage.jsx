@@ -54,15 +54,18 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center py-12 px-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-white flex items-center justify-center py-12 md:py-16 px-4 -mt-16 pt-28 md:-mt-20 md:pt-28">
+      <div className="w-full max-w-md space-y-8">
         {/* Title */}
-        <h1 className="text-4xl md:text-5xl font-serif text-font-primary text-center mb-12">
-          Welcome!
-        </h1>
+        <div className="text-center space-y-3">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-font-primary leading-tight">
+            Welcome!
+          </h1>
+          <p className="text-gray-600 text-base">Sign in to continue your learning journey</p>
+        </div>
 
         {/* Form */}
-        <div className="space-y-6">
+        <div className="space-y-8">
           {error && <ErrorMessage message={error} className="mb-4" />}
 
           <form onSubmit={handleSubmit} className="space-y-6">

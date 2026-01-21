@@ -9,7 +9,7 @@ import { useAuth } from '@/context/AuthContext';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { ErrorMessage } from '@/components/common/ErrorMessage';
 import { Button } from '@/components/common/Button';
-import { FiStar, FiUsers, FiBook, FiArrowLeft } from 'react-icons/fi';
+import { FiArrowLeft, FiLock } from 'react-icons/fi';
 import { ROUTES } from '@/constants';
 
 export const CourseDetailPage = () => {
@@ -56,7 +56,7 @@ export const CourseDetailPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-secondary-dark -mt-16 pt-16 md:-mt-20 md:pt-20">
         <LoadingSpinner size="lg" />
       </div>
     );
@@ -108,176 +108,153 @@ export const CourseDetailPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-primary text-white pt-20 md:pt-24">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-[#f5f3ee] -mt-16 pt-16 md:-mt-20 md:pt-20">
+      {/* Top hero layout: clean background + course summary */}
+      <section className="py-12 md:py-16">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
           <Link
             to={ROUTES.COURSES}
-            className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-4 transition-colors"
+            className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 mb-6"
           >
             <FiArrowLeft />
             <span>Back to Courses</span>
           </Link>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">{course.title}</h1>
-          {course.instructor && (
-            <p className="text-xl text-gray-200">By {course.instructor.name}</p>
-          )}
-        </div>
-      </div>
 
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Course Image */}
-            {course.thumbnail && (
-              <div className="rounded-xl overflow-hidden shadow-lg">
-                <img
-                  src={course.thumbnail}
-                  alt={course.title}
-                  className="w-full h-96 object-cover"
-                />
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.1fr),minmax(0,1.1fr)] gap-10 lg:gap-16 items-start bg-[#f8f6f1] rounded-2xl border border-[#e0dbcf] p-6 md:p-8 lg:p-10 shadow-sm">
+            {/* Image / media */}
+            <div className="w-full">
+              <div className="overflow-hidden rounded-xl border border-[#ddd3c3] bg-[#e7dfcf]">
+                {course.thumbnail ? (
+                  <img
+                    src={course.thumbnail}
+                    alt={course.title}
+                    className="w-full h-64 md:h-80 lg:h-96 object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-64 md:h-80 lg:h-96 flex items-center justify-center text-gray-500 text-lg">
+                    Course preview coming soon
+                  </div>
+                )}
               </div>
-            )}
-
-            {/* Description */}
-            <div className="bg-white rounded-xl shadow-sm border border-stroke p-8">
-              <h2 className="text-2xl font-bold text-font-primary mb-4">About This Course</h2>
-              <p className="text-gray-600 leading-relaxed whitespace-pre-line">
-                {course.description}
-              </p>
             </div>
 
-            {/* Chapters */}
-            {course.chapters && course.chapters.length > 0 && (
-              <div className="bg-white rounded-xl shadow-sm border border-stroke p-8">
-                <h2 className="text-2xl font-bold text-font-primary mb-6">Course Content</h2>
-                <div className="space-y-4">
-                  {course.chapters.map((chapter, index) => (
-                    <div key={chapter.id} className="border border-stroke rounded-lg p-4">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold">
-                          {index + 1}
-                        </div>
-                        <h3 className="text-lg font-semibold text-font-primary">{chapter.title}</h3>
-                      </div>
-                      {chapter.description && (
-                        <p className="text-gray-600 ml-11">{chapter.description}</p>
-                      )}
-                      {chapter.lessons && Array.isArray(chapter.lessons) && chapter.lessons.length > 0 && (
-                        <div className="mt-3 ml-11 space-y-2">
-                          {chapter.lessons.map((lesson) => (
-                            <div key={lesson.id || Math.random()} className="flex items-center gap-2 text-sm text-gray-600">
-                              <FiBook className="text-primary" />
-                              <span>{lesson.title || 'Untitled Lesson'}</span>
-                              {lesson.duration && (
-                                <span className="text-xs text-gray-500">({lesson.duration} min)</span>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
+            {/* Text / meta */}
+            <div className="space-y-6">
+              <div>
+                <p className="text-xs uppercase tracking-[0.25em] text-gray-500 mb-2">
+                  Course
+                </p>
+                <h1 className="text-3xl md:text-4xl lg:text-[2.6rem] font-bold leading-snug text-[#1f130c] mb-3">
+                  {course.title}
+                </h1>
+                {course.shortDescription && (
+                  <p className="text-sm md:text-base text-gray-600 leading-relaxed max-w-xl">
+                    {course.shortDescription}
+                  </p>
+                )}
               </div>
-            )}
-          </div>
 
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-lg border border-stroke p-6 sticky top-24">
-              {/* Price */}
-              <div className="mb-6">
-                <div className="text-4xl font-bold text-primary mb-2">
+              <div className="space-y-2 text-sm text-gray-700">
+                {course.level && (
+                  <p>
+                    <span className="font-semibold">Level:&nbsp;</span>
+                    {course.level}
+                  </p>
+                )}
+                {course.language && (
+                  <p>
+                    <span className="font-semibold">Language:&nbsp;</span>
+                    {course.language}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-3 pt-2">
+                <div className="text-2xl md:text-3xl font-bold text-[#1f130c]">
                   {formatPrice(course.price)}
                 </div>
                 <Button
                   variant="primary"
                   size="lg"
-                  className="w-full"
+                  className="w-full sm:w-auto px-8"
                   onClick={() => navigate(ROUTES.CHECKOUT(id))}
                 >
                   Enroll Now
                 </Button>
               </div>
-
-              {/* Course Info */}
-              <div className="space-y-4 border-t border-stroke pt-6">
-                <div className="flex items-center gap-3">
-                  <FiBook className="text-primary" size={20} />
-                  <div>
-                    <div className="text-sm text-gray-600">Level</div>
-                    <div className="font-semibold text-font-primary">{course.level}</div>
-                  </div>
-                </div>
-                {course.language && (
-                  <div className="flex items-center gap-3">
-                    <FiBook className="text-primary" size={20} />
-                    <div>
-                      <div className="text-sm text-gray-600">Language</div>
-                      <div className="font-semibold text-font-primary">{course.language}</div>
-                    </div>
-                  </div>
-                )}
-                {course.rating && (
-                  <div className="flex items-center gap-3">
-                    <FiStar className="text-secondary fill-secondary" size={20} />
-                    <div>
-                      <div className="text-sm text-gray-600">Rating</div>
-                      <div className="font-semibold text-font-primary">
-                        {course.rating.toFixed(1)} / 5.0
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {course.totalStudents && (
-                  <div className="flex items-center gap-3">
-                    <FiUsers className="text-primary" size={20} />
-                    <div>
-                      <div className="text-sm text-gray-600">Students</div>
-                      <div className="font-semibold text-font-primary">{course.totalStudents}</div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Instructor */}
-              {course.instructor && (
-                <div className="mt-6 pt-6 border-t border-stroke">
-                  <h3 className="font-semibold text-font-primary mb-3">Instructor</h3>
-                  <div className="flex items-center gap-3">
-                    {course.instructor.avatar ? (
-                      <img
-                        src={course.instructor.avatar}
-                        alt={course.instructor.name}
-                        className="w-12 h-12 rounded-full"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-primary text-white flex items-center justify-center font-bold">
-                        {course.instructor?.name?.charAt(0) || 'I'}
-                      </div>
-                    )}
-                    <div>
-                      <div className="font-semibold text-font-primary">{course.instructor?.name || 'Instructor'}</div>
-                      {course.instructor.specialization && (
-                        <div className="text-sm text-gray-600">{course.instructor.specialization}</div>
-                      )}
-                    </div>
-                  </div>
-                  <Link
-                    to={ROUTES.INSTRUCTOR_DETAIL(course.instructor.id)}
-                    className="mt-3 inline-block text-sm text-primary hover:text-primary-dark"
-                  >
-                    View Profile →
-                  </Link>
-                </div>
-              )}
             </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* What makes this course different */}
+      <section className="py-10 md:py-14">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
+          <div>
+            <h2 className="text-lg md:text-xl font-semibold text-[#1f130c] mb-3">
+              What Makes This Course Different?
+            </h2>
+            <p className="text-sm md:text-base text-gray-700 leading-relaxed whitespace-pre-line">
+              {course.description}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Course Curriculum with lock icons */}
+      {course.chapters && course.chapters.length > 0 && (
+        <section className="py-12 md:py-16 bg-[#111] text-white">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
+            <h2 className="text-xl md:text-2xl font-semibold mb-2">Course Curriculum</h2>
+            <p className="text-sm text-white/70 mb-6">
+              Preview the full lesson list. Content will unlock after you enroll.
+            </p>
+
+            <div className="rounded-xl border border-white/10 bg-black/70 overflow-hidden divide-y divide-white/10">
+              {course.chapters.map((chapter, chapterIndex) => (
+                <div key={chapter.id || chapterIndex}>
+                  <div className="px-4 md:px-6 py-3 flex items-center justify-between bg-white/5">
+                    <div className="flex items-center gap-3 text-sm md:text-base">
+                      <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white text-black text-xs font-semibold">
+                        {chapterIndex + 1}
+                      </span>
+                      <span className="font-semibold">
+                        {chapter.title || `Chapter ${chapterIndex + 1}`}
+                      </span>
+                    </div>
+                    {chapter.lessons && (
+                      <span className="text-xs text-white/60">
+                        {(chapter.lessons || []).length} lessons
+                      </span>
+                    )}
+                  </div>
+
+                  {chapter.lessons && Array.isArray(chapter.lessons) && chapter.lessons.length > 0 && (
+                    <div className="bg-black/40">
+                      {chapter.lessons.map((lesson, lessonIndex) => (
+                        <div
+                          key={lesson.id || `${chapterIndex}-${lessonIndex}`}
+                          className="px-4 md:px-6 py-2.5 flex items-center gap-3 text-sm text-white/80"
+                        >
+                          <FiLock className="text-white/60" size={14} />
+                          <span className="flex-1">
+                            {lesson.title || `Lesson ${lessonIndex + 1}`}
+                          </span>
+                          {lesson.duration && (
+                            <span className="text-xs text-white/50">
+                              {lesson.duration} min
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 };

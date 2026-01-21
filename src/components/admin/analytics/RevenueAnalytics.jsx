@@ -3,7 +3,7 @@
  * Multiple revenue charts and metrics
  */
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { AdminService } from '@/services';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
@@ -26,6 +26,117 @@ export const RevenueAnalytics = () => {
     queryFn: () => AdminService.getRevenueAnalytics({ period: timeRange }),
   });
 
+  // Helper function to get week number
+  const getWeekNumber = (date) => {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+  };
+
+  // Helper function to pad numbers
+  const padStart = (num, length) => {
+    const str = String(num);
+    return str.length >= length ? str : '0'.repeat(length - str.length) + str;
+  };
+
+  // Fallback: Fetch all orders to calculate analytics if backend returns empty data
+  const { data: ordersData } = useQuery({
+    queryKey: ['adminOrders', 'all'],
+    queryFn: () => AdminService.getOrders({ page: 1, limit: 1000 }),
+    enabled: !isLoading && (!data || (data?.summary?.totalRevenue === 0 && data?.summary?.totalOrders === 0)),
+  });
+
+  // Calculate analytics from orders if backend data is empty
+  const calculatedAnalytics = useMemo(() => {
+    const orders = ordersData?.data?.orders || ordersData?.orders || [];
+    
+    if (orders.length === 0) {
+      return null;
+    }
+
+    // Filter completed/paid orders for revenue calculation
+    const completedOrders = orders.filter(order => 
+      order.status === 'completed' || order.status === 'paid'
+    );
+
+    // Calculate totals
+    // Total Revenue: only from completed/paid orders
+    const totalRevenue = completedOrders.reduce((sum, order) => {
+      return sum + (Number.parseFloat(order.totalAmount || order.amount || 0));
+    }, 0);
+
+    // Total Orders: count all orders (to show activity)
+    const totalOrders = orders.length;
+    
+    // Average Order Value: revenue / completed orders
+    const averageOrderValue = completedOrders.length > 0 ? totalRevenue / completedOrders.length : 0;
+
+    // Group orders by time period for time series
+    const timeSeriesMap = new Map();
+    
+    completedOrders.forEach(order => {
+      if (!order.createdAt) return;
+      
+      const date = new Date(order.createdAt);
+      let key = '';
+      
+      if (timeRange === 'monthly') {
+        key = `${date.getFullYear()}-${padStart(date.getMonth() + 1, 2)}`;
+      } else if (timeRange === 'weekly') {
+        const week = getWeekNumber(date);
+        key = `${date.getFullYear()}-W${padStart(week, 2)}`;
+      } else if (timeRange === 'daily') {
+        key = `${date.getFullYear()}-${padStart(date.getMonth() + 1, 2)}-${padStart(date.getDate(), 2)}`;
+      }
+
+      if (key) {
+        const existing = timeSeriesMap.get(key) || { revenue: 0, orders: 0 };
+        timeSeriesMap.set(key, {
+          revenue: existing.revenue + (Number.parseFloat(order.totalAmount || order.amount || 0)),
+          orders: existing.orders + 1,
+          date: key,
+        });
+      }
+    });
+
+    // Convert to array and sort by date
+    const timeSeries = Array.from(timeSeriesMap.values())
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    // Calculate growth (compare current period with previous)
+    const currentPeriodRevenue = timeSeries.slice(-1)[0]?.revenue || 0;
+    const previousPeriodRevenue = timeSeries.slice(-2, -1)[0]?.revenue || 0;
+    const revenueGrowth = previousPeriodRevenue > 0 
+      ? ((currentPeriodRevenue - previousPeriodRevenue) / previousPeriodRevenue) * 100 
+      : 0;
+
+    const currentPeriodOrders = timeSeries.slice(-1)[0]?.orders || 0;
+    const previousPeriodOrders = timeSeries.slice(-2, -1)[0]?.orders || 0;
+    const ordersGrowth = previousPeriodOrders > 0 
+      ? ((currentPeriodOrders - previousPeriodOrders) / previousPeriodOrders) * 100 
+      : 0;
+
+    const currentPeriodAOV = currentPeriodOrders > 0 ? currentPeriodRevenue / currentPeriodOrders : 0;
+    const previousPeriodAOV = previousPeriodOrders > 0 ? previousPeriodRevenue / previousPeriodOrders : 0;
+    const aovGrowth = previousPeriodAOV > 0 
+      ? ((currentPeriodAOV - previousPeriodAOV) / previousPeriodAOV) * 100 
+      : 0;
+
+    return {
+      summary: {
+        totalRevenue,
+        totalOrders,
+        averageOrderValue,
+        revenueGrowth,
+        ordersGrowth,
+        aovGrowth,
+      },
+      timeSeries,
+    };
+  }, [ordersData, timeRange]);
+
   // Format time series data for charts
   const formatTimeSeriesData = (timeSeries) => {
     if (!timeSeries || !Array.isArray(timeSeries)) return [];
@@ -47,8 +158,8 @@ export const RevenueAnalytics = () => {
         dateLabel = dayMatch ? `Day ${dayMatch[0]}` : item.date;
       } else if (timeRange === 'weekly' && item.date) {
         // For weekly, show week number
-        const weekMatch = item.date.match(/\d+/);
-        dateLabel = weekMatch ? `Week ${weekMatch[0]}` : item.date;
+        const weekMatch = item.date.match(/W(\d+)/);
+        dateLabel = weekMatch ? `Week ${weekMatch[1]}` : item.date;
       }
 
       return {
@@ -59,8 +170,13 @@ export const RevenueAnalytics = () => {
     });
   };
 
-  const revenueData = formatTimeSeriesData(data?.timeSeries || []);
-  const summary = data?.summary || {};
+  // Use calculated analytics if backend data is empty, otherwise use backend data
+  const analyticsData = (data?.summary?.totalRevenue > 0 || data?.summary?.totalOrders > 0) 
+    ? data 
+    : calculatedAnalytics;
+
+  const revenueData = formatTimeSeriesData(analyticsData?.timeSeries || []);
+  const summary = analyticsData?.summary || {};
   const totalRevenue = summary.totalRevenue || 0;
   const totalOrders = summary.totalOrders || 0;
   const averageOrderValue = summary.averageOrderValue || 0;

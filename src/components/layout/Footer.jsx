@@ -18,7 +18,7 @@ export const Footer = () => {
       location.pathname === ROUTES.COURSES ||
       location.pathname.startsWith(ROUTES.COURSE_DETAIL('').replace(':id', ''))
     ) {
-      return 'bg-secondary-dark';
+      return 'bg-[#2B211A]';
     }
         if (location.pathname === ROUTES.ABOUT) {
       return 'bg-gray-50';
@@ -48,17 +48,14 @@ export const Footer = () => {
     company: [
       { label: 'About Us', path: '/about' },
       { label: 'Contact', path: '/contact' },
-      { label: 'Careers', path: '/careers' },
     ],
-        resources: [
-          { label: 'Courses', path: ROUTES.COURSES },
-          { label: 'About Salman', path: ROUTES.ABOUT },
-          { label: 'Blog', path: '/blog' },
-        ],
+    resources: [
+      { label: 'Courses', path: ROUTES.COURSES },
+      { label: 'About Salman', path: ROUTES.ABOUT },
+    ],
     legal: [
-      { label: 'Privacy Policy', path: '/privacy' },
-      { label: 'Terms of Service', path: '/terms' },
-      { label: 'Cookie Policy', path: '/cookies' },
+      { label: 'Privacy Policy', path: ROUTES.PRIVACY },
+      { label: 'Terms of Service', path: ROUTES.TERMS },
     ],
   };
 
@@ -80,20 +77,20 @@ export const Footer = () => {
         <div
           className="absolute left-0 right-0 w-full pointer-events-none cleveland-bg-container"
           style={{
-            top: '-300px',
+            top: '-220px',
             bottom: 0,
-            height: 'calc(100% + 300px)',
+            height: 'calc(100% + 220px)',
             zIndex: 0,
           }}
           aria-hidden="true"
         >
-          {/* Top fade gradient - blends into courses section (BLACK FADE) */}
+          {/* Bottom fade gradient - sits behind footer content for readability */}
           <div
-            className="absolute top-0 left-0 right-0 pointer-events-none"
+            className="absolute bottom-0 left-0 right-0 pointer-events-none"
             style={{
-              height: '200px',
+              height: '100%',
               background:
-                'linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.8) 30%, rgba(0, 0, 0, 0.5) 60%, rgba(0, 0, 0, 0.2) 85%, rgba(0, 0, 0, 0) 100%)',
+                'linear-gradient(to top, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.85) 25%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.2) 80%, rgba(0, 0, 0, 0) 100%)',
               zIndex: 2,
             }}
             aria-hidden="true"
@@ -117,7 +114,7 @@ export const Footer = () => {
       {/* Footer Content - Overlay on top */}
       <div
         className={`relative z-20 container mx-auto px-4 sm:px-6 lg:px-8 ${
-          isHomePage ? 'pt-12 pb-20' : 'py-16'
+          isHomePage ? 'pt-20 pb-28' : 'py-20'
         }`}
       >
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -213,19 +210,19 @@ export const Footer = () => {
       {isHomePage && (
         <style>{`
           .cleveland-bg-container {
-            top: -250px !important;
-            height: calc(100% + 250px) !important;
+            top: -220px !important;
+            height: calc(100% + 220px) !important;
           }
           @media (min-width: 640px) {
             .cleveland-bg-container {
-              top: -280px !important;
-              height: calc(100% + 280px) !important;
+              top: -260px !important;
+              height: calc(100% + 260px) !important;
             }
           }
           @media (min-width: 1024px) {
             .cleveland-bg-container {
-              top: -300px !important;
-              height: calc(100% + 300px) !important;
+              top: -320px !important;
+              height: calc(100% + 320px) !important;
             }
           }
         `}</style>

@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react';
 import desertBg from '@/assets/images/wolfgang-hasselmann-pVr6wvUneMk-unsplash.jpg';
 import unionLogo from '@/assets/images/Union.png';
+import { ScrollDownArrow } from '@/components/common/ScrollDownArrow';
 
 export const HeroSection = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -18,35 +19,32 @@ export const HeroSection = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Calculate parallax effect - hero moves slower as you scroll
-  const parallaxOffset = scrollY * 0.5;
-
   return (
     <section 
-      className="relative h-screen flex items-center justify-center text-white overflow-hidden"
+      className="relative flex items-center justify-center text-white overflow-hidden -mt-16 pt-16 md:-mt-20 md:pt-20"
       style={{
+        height: '100vh',
+        minHeight: '100vh',
+        width: '100%',
         backgroundImage: `url(${desertBg})`,
         backgroundSize: 'cover',
-        backgroundPosition: `center ${parallaxOffset}px`,
+        backgroundPosition: 'center bottom', // ensure full dunes image, no black band
         backgroundRepeat: 'no-repeat',
         transform: `translateY(${scrollY * 0.3}px)`,
         transition: 'transform 0.1s ease-out',
+        zIndex: 0,
       }}
     >
-      {/* Dark overlay for text readability */}
-      <div className="absolute inset-0 bg-black/40"></div>
+      {/* Dark overlay for overall readability */}
+      <div className="absolute inset-0 bg-black/40" style={{ zIndex: 1 }}></div>
       
-      {/* Subtle background pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 50px, rgba(255,255,255,0.1) 50px, rgba(255,255,255,0.1) 51px)`
-        }}></div>
-      </div>
+      {/* Subtle background pattern removed and bottom fade removed as requested */}
 
       {/* Content */}
       <div 
-        className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
+        className="container mx-auto px-4 sm:px-6 lg:px-8 relative"
         style={{
+          zIndex: 3,
           transform: `translateY(${scrollY * 0.2}px)`,
           opacity: Math.max(0, 1 - scrollY / 500), // Fade out as you scroll
         }}
@@ -69,6 +67,9 @@ export const HeroSection = () => {
           </p>
         </div>
       </div>
+
+      {/* Scroll Down Arrow */}
+      <ScrollDownArrow />
     </section>
   );
 };
