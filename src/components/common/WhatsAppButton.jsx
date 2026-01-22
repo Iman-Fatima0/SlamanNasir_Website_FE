@@ -3,7 +3,7 @@
  */
 
 export const WhatsAppButton = () => {
-  const phoneNumber = '923034444961';
+  const phoneNumber = '923221508531';
   const message = 'hello how can i help you';
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 

@@ -20,12 +20,15 @@ import { InstructorDetailPage } from '@/pages/InstructorDetailPage';
 import { CheckoutPage } from '@/pages/CheckoutPage';
 import { LoginPage } from '@/pages/LoginPage';
 import { SignupPage } from '@/pages/SignupPage';
+import { ForgotPasswordPage } from '@/pages/ForgotPasswordPage';
+import { ResetPasswordPage } from '@/pages/ResetPasswordPage';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { OAuthCallbackPage } from '@/pages/OAuthCallbackPage';
 import { UserProfilePage } from '@/pages/user/UserProfilePage';
 import { UserCoursesPage } from '@/pages/user/UserCoursesPage';
 import { UserPurchasesPage } from '@/pages/user/UserPurchasesPage';
 import { UserSettingsPage } from '@/pages/user/UserSettingsPage';
+import { CourseLearningPage } from '@/pages/user/CourseLearningPage';
 import { AdminDashboardPage } from '@/pages/admin/AdminDashboardPage';
 import { AdminUsersPage } from '@/pages/admin/AdminUsersPage';
 import { AdminCoursesPage } from '@/pages/admin/AdminCoursesPage';
@@ -82,10 +85,13 @@ const AppContent = () => {
           <Route path="/instructors/:id" element={<InstructorDetailPage />} />
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
           <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
+          <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPasswordPage />} />
+          <Route path={ROUTES.RESET_PASSWORD} element={<ResetPasswordPage />} />
           <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
           {/* User Dashboard Routes */}
           <Route path={ROUTES.USER.PROFILE} element={<UserProfilePage />} />
           <Route path={ROUTES.USER.COURSES} element={<UserCoursesPage />} />
+          <Route path={ROUTES.USER.COURSE_LEARNING(':id')} element={<CourseLearningPage />} />
           <Route path={ROUTES.USER.PURCHASES} element={<UserPurchasesPage />} />
           <Route path={ROUTES.USER.SETTINGS} element={<UserSettingsPage />} />
           <Route path="/auth/callback" element={<OAuthCallbackPage />} />

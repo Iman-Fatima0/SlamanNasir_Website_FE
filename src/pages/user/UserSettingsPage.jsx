@@ -112,19 +112,19 @@ const UserSettingsContent = () => {
     <UserLayout>
       <div className="max-w-4xl">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-font-primary">Settings</h1>
-          <p className="text-gray-600 mt-2">Manage your account settings and preferences</p>
+          <h1 className="text-3xl font-bold text-white">Settings</h1>
+          <p className="text-gray-400 mt-2">Manage your account settings and preferences</p>
         </div>
 
         {/* Account Settings */}
-        <div className="bg-white rounded-xl shadow-sm border border-stroke p-8 mb-6">
+        <div className="bg-[#1A1D29] rounded-xl shadow-sm border border-gray-800 p-8 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <FiSettings className="text-primary" size={24} />
-            <h2 className="text-2xl font-bold text-font-primary">Account Settings</h2>
+            <FiSettings className="text-blue-400" size={24} />
+            <h2 className="text-2xl font-bold text-white">Account Settings</h2>
           </div>
           <div className="space-y-4">
             <div>
-              <label htmlFor="change-password-btn" className="block text-sm font-medium text-gray-600 mb-2">Change Password</label>
+              <label htmlFor="change-password-btn" className="block text-sm font-medium text-gray-300 mb-2">Change Password</label>
               <Button 
                 id="change-password-btn"
                 variant="outline" 
@@ -138,10 +138,10 @@ const UserSettingsContent = () => {
         </div>
 
         {/* Notification Preferences */}
-        <div className="bg-white rounded-xl shadow-sm border border-stroke p-8 mb-6">
+        <div className="bg-[#1A1D29] rounded-xl shadow-sm border border-gray-800 p-8 mb-6">
           <div className="flex items-center gap-3 mb-6">
-            <FiBell className="text-primary" size={24} />
-            <h2 className="text-2xl font-bold text-font-primary">Notification Preferences</h2>
+            <FiBell className="text-blue-400" size={24} />
+            <h2 className="text-2xl font-bold text-white">Notification Preferences</h2>
           </div>
           <div className="space-y-4">
             <label className="flex items-center cursor-pointer">
@@ -149,31 +149,31 @@ const UserSettingsContent = () => {
                 type="checkbox"
                 checked={notifications.email}
                 onChange={() => handleNotificationChange('email')}
-                className="mr-3 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                className="mr-3 h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-600 bg-gray-800 rounded"
               />
-              <span className="text-sm text-gray-700">Email notifications</span>
+              <span className="text-sm text-gray-300">Email notifications</span>
             </label>
             <label className="flex items-center cursor-pointer">
               <input
                 type="checkbox"
                 checked={notifications.courseUpdates}
                 onChange={() => handleNotificationChange('courseUpdates')}
-                className="mr-3 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+                className="mr-3 h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-600 bg-gray-800 rounded"
               />
-              <span className="text-sm text-gray-700">Course updates</span>
+              <span className="text-sm text-gray-300">Course updates</span>
             </label>
           </div>
         </div>
 
         {/* Change Password Modal */}
         {showChangePasswordModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-xl shadow-lg border border-stroke p-8 max-w-md w-full mx-4">
+          <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+            <div className="bg-[#1A1D29] rounded-xl shadow-lg border border-gray-800 p-8 max-w-md w-full mx-4">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-font-primary">Change Password</h2>
+                <h2 className="text-2xl font-bold text-white">Change Password</h2>
                 <button
                   onClick={closePasswordModal}
-                  className="text-gray-500 hover:text-gray-700 transition-colors"
+                  className="text-gray-400 hover:text-white transition-colors"
                   aria-label="Close modal"
                 >
                   <FiX size={24} />
@@ -188,7 +188,7 @@ const UserSettingsContent = () => {
 
               <form onSubmit={handleChangePassword} className="space-y-4">
                 <div>
-                  <label htmlFor="current-password" className="block text-sm font-medium text-gray-600 mb-1">
+                  <label htmlFor="current-password" className="block text-sm font-medium text-gray-300 mb-1">
                     Current Password
                   </label>
                   <div className="relative">
@@ -197,7 +197,7 @@ const UserSettingsContent = () => {
                       type={showPasswords.current ? 'text' : 'password'}
                       value={passwordData.currentPassword}
                       onChange={(e) => handlePasswordChange('currentPassword', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md text-font-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary pr-10"
+                      className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-10"
                       placeholder="Enter current password"
                       required
                       disabled={isChangingPassword}
@@ -205,7 +205,7 @@ const UserSettingsContent = () => {
                     <button
                       type="button"
                       onClick={() => setShowPasswords((prev) => ({ ...prev, current: !prev.current }))}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
                     >
                       {showPasswords.current ? <FiEyeOff size={18} /> : <FiEye size={18} />}
                     </button>
@@ -213,7 +213,7 @@ const UserSettingsContent = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="new-password" className="block text-sm font-medium text-gray-600 mb-1">
+                  <label htmlFor="new-password" className="block text-sm font-medium text-gray-300 mb-1">
                     New Password
                   </label>
                   <div className="relative">
@@ -222,7 +222,7 @@ const UserSettingsContent = () => {
                       type={showPasswords.new ? 'text' : 'password'}
                       value={passwordData.newPassword}
                       onChange={(e) => handlePasswordChange('newPassword', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md text-font-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary pr-10"
+                      className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-10"
                       placeholder="Enter new password"
                       required
                       disabled={isChangingPassword}
@@ -230,16 +230,16 @@ const UserSettingsContent = () => {
                     <button
                       type="button"
                       onClick={() => setShowPasswords((prev) => ({ ...prev, new: !prev.new }))}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
                     >
                       {showPasswords.new ? <FiEyeOff size={18} /> : <FiEye size={18} />}
                     </button>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">Must be at least 6 characters</p>
+                  <p className="text-xs text-gray-400 mt-1">Must be at least 6 characters</p>
                 </div>
 
                 <div>
-                  <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-600 mb-1">
+                  <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-300 mb-1">
                     Confirm New Password
                   </label>
                   <div className="relative">
@@ -248,7 +248,7 @@ const UserSettingsContent = () => {
                       type={showPasswords.confirm ? 'text' : 'password'}
                       value={passwordData.confirmPassword}
                       onChange={(e) => handlePasswordChange('confirmPassword', e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md text-font-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary pr-10"
+                      className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-10"
                       placeholder="Confirm new password"
                       required
                       disabled={isChangingPassword}
@@ -256,7 +256,7 @@ const UserSettingsContent = () => {
                     <button
                       type="button"
                       onClick={() => setShowPasswords((prev) => ({ ...prev, confirm: !prev.confirm }))}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
                     >
                       {showPasswords.confirm ? <FiEyeOff size={18} /> : <FiEye size={18} />}
                     </button>

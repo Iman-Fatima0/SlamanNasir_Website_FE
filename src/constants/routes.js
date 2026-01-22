@@ -14,12 +14,15 @@ export const ROUTES = {
   COOKIES: '/cookies',
   LOGIN: '/login',
   SIGNUP: '/signup',
+  FORGOT_PASSWORD: '/forgot-password',
+  RESET_PASSWORD: '/reset-password',
   DASHBOARD: '/dashboard',
   USER: {
     PROFILE: '/dashboard/profile',
     COURSES: '/dashboard/courses',
     PURCHASES: '/dashboard/purchases',
     SETTINGS: '/dashboard/settings',
+    COURSE_LEARNING: (id) => `/dashboard/courses/${id}/learn`,
   },
   ADMIN: {
     DASHBOARD: '/admin',

@@ -9,7 +9,9 @@ import { mapCourse, mapCourses } from '@/utils/dataMapper';
 export class StudentService {
   /**
    * Get all courses the student is enrolled in (order verified)
-   * Returns only courses the user has access to via valid orders/enrollments
+   * Returns only courses the user has access to via valid enrollments
+   * NOTE: This only returns courses with APPROVED orders (enrollments exist)
+   * Pending purchases appear in "My Purchases" but NOT in "My Courses"
    */
   static async getCourses() {
     try {
@@ -50,19 +52,61 @@ export class StudentService {
    * Returns full course data with nested chapters and lessons
    */
   static async getCourseById(id) {
-    const response = await apiClient.get(API_ENDPOINTS.STUDENT.COURSE_BY_ID(id));
+    try {
+      const response = await apiClient.get(API_ENDPOINTS.STUDENT.COURSE_BY_ID(id));
 
-    if (response.success === false) {
-      throw new Error(response.message || 'Failed to fetch course');
+      if (response.success === false) {
+        const error = new Error(response.message || 'Failed to fetch course');
+        error.status = response.status;
+        throw error;
+      }
+
+      // Transform backend course data to frontend format
+      const course = mapCourse(response.data?.course || response.data);
+
+      return {
+        ...response.data,
+        course,
+      };
+    } catch (error) {
+      // Handle different error types
+      const status = error.status || error.response?.status;
+      
+      // Handle 404 - Course not found or not enrolled
+      if (status === 404) {
+        const notFoundError = new Error('Course not found or you are not enrolled in this course.');
+        notFoundError.status = 404;
+        throw notFoundError;
+      }
+      
+      // Handle 403/401 - Access denied
+      if (status === 403 || status === 401) {
+        const accessError = new Error('You do not have access to this course. Please ensure your purchase has been verified.');
+        accessError.status = status;
+        throw accessError;
+      }
+      
+      // Handle 500 errors with a more user-friendly message
+      if (status === 500) {
+        const serverError = new Error('Server error. Please try again later or contact support if the problem persists.');
+        serverError.status = 500;
+        throw serverError;
+      }
+      
+      // Preserve status if available
+      if (status && !error.status) {
+        error.status = status;
+      }
+      
+      // Preserve original error message if it exists
+      if (error.message && !error.message.includes('Failed to fetch course')) {
+        const customError = new Error(error.message);
+        customError.status = status;
+        throw customError;
+      }
+      
+      throw error;
     }
-
-    // Transform backend course data to frontend format
-    const course = mapCourse(response.data?.course || response.data);
-
-    return {
-      ...response.data,
-      course,
-    };
   }
 
   /**
@@ -81,6 +125,39 @@ export class StudentService {
     }
 
     return response.data;
+  }
+
+  /**
+   * Get all student orders (purchase history)
+   * Returns ALL orders: pending, approved, and rejected
+   * NOTE: This shows purchases immediately after checkout, even if status is "pending"
+   * Courses only appear in "My Courses" after admin approves the order (enrollment created)
+   */
+  static async getOrders() {
+    try {
+      const response = await apiClient.get(API_ENDPOINTS.STUDENT.ORDERS);
+
+      if (response.success === false) {
+        const error = new Error(response.message || 'Failed to fetch orders');
+        error.status = response.status;
+        throw error;
+      }
+
+      return response.data;
+    } catch (error) {
+      // Handle 500 errors with a more user-friendly message
+      const status = error.status || error.response?.status;
+      if (status === 500) {
+        const serverError = new Error('Server error. Please try again later or contact support if the problem persists.');
+        serverError.status = 500;
+        throw serverError;
+      }
+      // Preserve status if available
+      if (status && !error.status) {
+        error.status = status;
+      }
+      throw error;
+    }
   }
 
   /**

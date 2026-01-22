@@ -154,7 +154,8 @@ export class UploadService {
   }
 
   /**
-   * Upload an image file
+   * Upload an image file (Admin/Instructor only)
+   * For course thumbnails, lesson images, etc.
    * @param {File} file - Image file to upload
    * @returns {Promise<{success: boolean, data: {fullUrl: string, filename: string}}>}
    */
@@ -180,6 +181,12 @@ export class UploadService {
         const error = await response.json().catch(() => ({ 
           message: `Upload failed with status ${response.status}` 
         }));
+        
+        // Provide more specific error messages
+        if (response.status === 403) {
+          throw new Error('You do not have permission to upload images. This endpoint requires admin or instructor role.');
+        }
+        
         throw new Error(error.message || `Failed to upload image: ${response.statusText}`);
       }
 
@@ -188,6 +195,79 @@ export class UploadService {
       // Handle network errors
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
         throw new Error('Network error: Could not connect to server. Please check if the backend is running.');
+      }
+      // Handle connection reset errors
+      if (error.message && (error.message.includes('ERR_CONNECTION_RESET') || error.message.includes('connection reset'))) {
+        throw new Error('Connection was reset. The file may be too large or the server may have encountered an error. Please try again with a smaller file.');
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Upload a profile image (All authenticated users)
+   * For user profile pictures, avatars, etc.
+   * @param {File} file - Image file to upload (max 10MB)
+   * @returns {Promise<{success: boolean, data: {url: string, fullUrl: string, filename: string}}>}
+   */
+  static async uploadProfileImage(file) {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const baseURL = this.getBaseURL();
+    const token = this.getAuthToken();
+    const endpoint = `${baseURL}/api${API_ENDPOINTS.UPLOAD.PROFILE_IMAGE}`;
+
+    // Validate file size (10MB limit for profile images)
+    const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+    if (file.size > maxSize) {
+      throw new Error('File size exceeds 10MB limit. Please choose a smaller image.');
+    }
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      throw new Error('Invalid file type. Please upload a JPEG, PNG, GIF, or WebP image.');
+    }
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          // Don't set Content-Type - browser will set it with boundary for FormData
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({ 
+          message: `Upload failed with status ${response.status}` 
+        }));
+        
+        // Provide more specific error messages
+        if (response.status === 401) {
+          throw new Error('You must be logged in to upload profile images.');
+        }
+        if (response.status === 400) {
+          throw new Error(error.message || 'Invalid file. Please ensure the file is a valid image under 10MB.');
+        }
+        if (response.status === 413) {
+          throw new Error('File is too large. Maximum size is 10MB.');
+        }
+        
+        throw new Error(error.message || `Failed to upload profile image: ${response.statusText}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      // Handle network errors
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        throw new Error('Network error: Could not connect to server. Please check if the backend is running.');
+      }
+      // Handle connection reset errors
+      if (error.message && (error.message.includes('ERR_CONNECTION_RESET') || error.message.includes('connection reset'))) {
+        throw new Error('Connection was reset. The file may be too large or the server may have encountered an error. Please try again with a smaller file (under 10MB).');
       }
       throw error;
     }

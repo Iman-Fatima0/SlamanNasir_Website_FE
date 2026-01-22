@@ -31,6 +31,8 @@ export const API_ENDPOINTS = {
     COURSES: '/student/courses',
     COURSE_BY_ID: (id) => `/student/courses/${id}`,
     CHECKOUT: '/student/checkout',
+    ORDERS: '/student/orders',
+    ORDER_BY_ID: (id) => `/student/orders/${id}`,
     ENROLLMENTS: '/student/enrollments',
     ENROLLMENT_BY_ID: (id) => `/student/enrollments/${id}`,
     PROGRESS_BY_ENROLLMENT: (enrollmentId) => `/student/progress/${enrollmentId}`,
@@ -77,7 +79,8 @@ export const API_ENDPOINTS = {
     VIDEO: '/upload/video',
     AUDIO: '/upload/audio',
     PDF: '/upload/pdf',
-    IMAGE: '/upload/image',
+    IMAGE: '/upload/image', // Admin/Instructor only
+    PROFILE_IMAGE: '/upload/profile-image', // All authenticated users
     LESSON: '/upload/lesson',
     PREVIEW: {
       VIDEO: (filename) => `/upload/preview/video/${filename}`,

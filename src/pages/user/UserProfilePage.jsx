@@ -123,12 +123,12 @@ const UserProfileContent = () => {
     <UserLayout>
       <div className="max-w-4xl">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-font-primary">My Profile</h1>
-          <p className="text-gray-600 mt-2">Manage your personal information</p>
+          <h1 className="text-3xl font-bold text-white">My Profile</h1>
+          <p className="text-gray-400 mt-2">Manage your personal information</p>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-stroke p-8">
-          <h2 className="text-2xl font-bold text-font-primary mb-6">Profile Information</h2>
+        <div className="bg-[#1A1D29] rounded-xl shadow-sm border border-gray-800 p-8">
+          <h2 className="text-2xl font-bold text-white mb-6">Profile Information</h2>
           
           {error && (
             <div className="mb-4">
@@ -138,7 +138,7 @@ const UserProfileContent = () => {
 
           <div className="space-y-4">
             <div>
-              <label htmlFor="firstName" className="block text-sm font-medium text-gray-600 mb-1">First Name</label>
+              <label htmlFor="firstName" className="block text-sm font-medium text-gray-300 mb-1">First Name</label>
               {isEditing ? (
                 <input
                   id="firstName"
@@ -147,14 +147,14 @@ const UserProfileContent = () => {
                   value={formData.firstName}
                   onChange={handleChange}
                   disabled={isSaving}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md text-lg text-font-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md text-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               ) : (
-                <div className="text-lg text-font-primary">{user?.firstName || 'N/A'}</div>
+                <div className="text-lg text-white">{user?.firstName || 'N/A'}</div>
               )}
             </div>
             <div>
-              <label htmlFor="lastName" className="block text-sm font-medium text-gray-600 mb-1">Last Name</label>
+              <label htmlFor="lastName" className="block text-sm font-medium text-gray-300 mb-1">Last Name</label>
               {isEditing ? (
                 <input
                   id="lastName"
@@ -163,14 +163,14 @@ const UserProfileContent = () => {
                   value={formData.lastName}
                   onChange={handleChange}
                   disabled={isSaving}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-md text-lg text-font-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md text-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               ) : (
-                <div className="text-lg text-font-primary">{user?.lastName || 'N/A'}</div>
+                <div className="text-lg text-white">{user?.lastName || 'N/A'}</div>
               )}
             </div>
             <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-600 mb-1">Phone Number</label>
+              <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-1">Phone Number</label>
               {isEditing ? (
                 <div>
                   <input
@@ -181,27 +181,27 @@ const UserProfileContent = () => {
                     onChange={handleChange}
                     disabled={isSaving}
                     placeholder="+12345678901 or 123-456-78901"
-                    className={`w-full px-4 py-2 border rounded-md text-lg text-font-primary focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary disabled:opacity-50 disabled:cursor-not-allowed ${
-                      phoneError ? 'border-red-300' : 'border-gray-300'
+                    className={`w-full px-4 py-2 bg-gray-800 border rounded-md text-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed ${
+                      phoneError ? 'border-red-500' : 'border-gray-700'
                     }`}
                   />
                   {phoneError && (
-                    <p className="text-sm text-red-600 mt-1">{phoneError}</p>
+                    <p className="text-sm text-red-400 mt-1">{phoneError}</p>
                   )}
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm text-gray-400 mt-1">
                     Enter 11-15 digits. You can use spaces, dashes, or plus signs.
                   </p>
                 </div>
               ) : (
-                <div className="text-lg text-font-primary">
+                <div className="text-lg text-white">
                   {user?.phone ? formatPhoneForDisplay(user.phone) : 'N/A'}
                 </div>
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">Email</label>
-              <div className="text-lg text-font-primary">{user?.email || 'N/A'}</div>
-              <p className="text-sm text-gray-500 mt-1">Email cannot be changed</p>
+              <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+              <div className="text-lg text-white">{user?.email || 'N/A'}</div>
+              <p className="text-sm text-gray-400 mt-1">Email cannot be changed</p>
             </div>
             <div className="pt-4">
               {isEditing ? (

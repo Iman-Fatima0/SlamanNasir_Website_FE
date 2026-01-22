@@ -8,6 +8,7 @@ import { useAuth } from '@/context/AuthContext';
 import { AuthService } from '@/services';
 import { ErrorMessage } from '@/components/common/ErrorMessage';
 import { ROUTES } from '@/constants';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 export const SignupPage = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +19,7 @@ export const SignupPage = () => {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { signup } = useAuth();
   const navigate = useNavigate();
 
@@ -134,16 +136,26 @@ export const SignupPage = () => {
               <label htmlFor="password" className="block text-sm font-bold text-font-primary mb-2">
                 Password
               </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-md text-font-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
-                placeholder="New password"
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-md text-font-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors"
+                  placeholder="New password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                </button>
+              </div>
             </div>
 
             {/* Sign Up Button - Neumorphic Style */}

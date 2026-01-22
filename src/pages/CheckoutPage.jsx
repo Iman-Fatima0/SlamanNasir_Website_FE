@@ -59,6 +59,7 @@ export const CheckoutPage = () => {
     notes: '',
   });
   const [paymentProofUrl, setPaymentProofUrl] = useState('');
+  const [paymentProofFileName, setPaymentProofFileName] = useState('');
   const [uploading, setUploading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -168,19 +169,41 @@ export const CheckoutPage = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Store filename immediately so user sees it
+    setPaymentProofFileName(file.name);
     setUploading(true);
+    
     try {
-      const result = await UploadService.uploadImage(file);
-      if (result?.success && result.data?.fullUrl) {
-        setPaymentProofUrl(result.data.fullUrl);
+      // Use uploadProfileImage for payment proof - works for all authenticated users
+      // This endpoint allows any authenticated user to upload images (not just admin/instructor)
+      const result = await UploadService.uploadProfileImage(file);
+      
+      if (result?.success && result.data) {
+        // Prefer fullUrl, fallback to constructing from url
+        const imageUrl = result.data.fullUrl || 
+          (result.data.url 
+            ? (result.data.url.startsWith('http') 
+                ? result.data.url 
+                : `${UploadService.getBaseURL()}${result.data.url}`)
+            : null);
+        
+        if (imageUrl) {
+          setPaymentProofUrl(imageUrl);
+          // Keep filename displayed
+        } else {
+          throw new Error('Upload did not return a valid URL');
+        }
       } else {
         throw new Error('Upload did not return a valid URL');
       }
     } catch (err) {
+      // Clear filename on error
+      setPaymentProofFileName('');
       globalThis.alert(`Failed to upload payment proof: ${err.message}`);
+      // Clear file input on error
+      e.target.value = null;
     } finally {
       setUploading(false);
-      e.target.value = null; // Clear file input
     }
   };
 
@@ -593,18 +616,31 @@ export const CheckoutPage = () => {
                         <label className="block text-xs uppercase tracking-wide text-gray-500 mb-1">
                           Payment proof (image)
                         </label>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleUploadProof}
-                          disabled={uploading}
-                          className="block w-full text-sm text-gray-700"
-                        />
-                        {paymentProofUrl && (
-                          <p className="mt-2 text-xs text-emerald-700">
-                            Payment proof uploaded successfully.
-                          </p>
-                        )}
+                        <div className="space-y-2">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleUploadProof}
+                            disabled={uploading}
+                            className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-800 file:text-white hover:file:bg-gray-900 file:cursor-pointer disabled:opacity-50"
+                            id="payment-proof-input"
+                          />
+                          {paymentProofFileName && (
+                            <div className="flex items-center gap-2">
+                              <p className="text-xs text-gray-700 font-medium">
+                                Selected: <span className="text-gray-900">{paymentProofFileName}</span>
+                              </p>
+                              {uploading && (
+                                <span className="text-xs text-blue-600">Uploading...</span>
+                              )}
+                            </div>
+                          )}
+                          {paymentProofUrl && !uploading && (
+                            <p className="text-xs text-emerald-700 font-medium">
+                              ✓ Payment proof uploaded successfully.
+                            </p>
+                          )}
+                        </div>
                       </div>
 
                       <div>
