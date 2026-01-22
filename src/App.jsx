@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { ScrollIndicator } from '@/components/common/ScrollIndicator';
+import { WhatsAppButton } from '@/components/common/WhatsAppButton';
 import { ROUTES } from '@/constants';
 import { HomePage } from '@/pages/HomePage';
 import { CoursesPage } from '@/pages/CoursesPage';
@@ -21,6 +22,10 @@ import { LoginPage } from '@/pages/LoginPage';
 import { SignupPage } from '@/pages/SignupPage';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { OAuthCallbackPage } from '@/pages/OAuthCallbackPage';
+import { UserProfilePage } from '@/pages/user/UserProfilePage';
+import { UserCoursesPage } from '@/pages/user/UserCoursesPage';
+import { UserPurchasesPage } from '@/pages/user/UserPurchasesPage';
+import { UserSettingsPage } from '@/pages/user/UserSettingsPage';
 import { AdminDashboardPage } from '@/pages/admin/AdminDashboardPage';
 import { AdminUsersPage } from '@/pages/admin/AdminUsersPage';
 import { AdminCoursesPage } from '@/pages/admin/AdminCoursesPage';
@@ -47,6 +52,7 @@ const queryClient = new QueryClient({
 const AppContent = () => {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+  const isUserDashboardRoute = location.pathname.startsWith('/dashboard');
   const isHomePage = location.pathname === ROUTES.HOME;
   const isCoursesPage = location.pathname === ROUTES.COURSES || location.pathname.startsWith(ROUTES.COURSE_DETAIL('').replace(':id', ''));
   const isAboutPage = location.pathname === ROUTES.ABOUT;
@@ -60,9 +66,9 @@ const AppContent = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {!isAdminRoute && <Header />}
-      {!isAdminRoute && <ScrollIndicator />}
-      <main className={`flex-grow ${!isAdminRoute && !pagesWithExtendedBackground ? 'pt-24' : ''}`}>
+      {!isAdminRoute && !isUserDashboardRoute && <Header />}
+      {!isAdminRoute && !isUserDashboardRoute && <ScrollIndicator />}
+      <main className={`flex-grow ${!isAdminRoute && !isUserDashboardRoute && !pagesWithExtendedBackground ? 'pt-24' : ''}`}>
         <Routes>
           <Route path={ROUTES.HOME} element={<HomePage />} />
           <Route path={ROUTES.COURSES} element={<CoursesPage />} />
@@ -77,6 +83,11 @@ const AppContent = () => {
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
           <Route path={ROUTES.SIGNUP} element={<SignupPage />} />
           <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
+          {/* User Dashboard Routes */}
+          <Route path={ROUTES.USER.PROFILE} element={<UserProfilePage />} />
+          <Route path={ROUTES.USER.COURSES} element={<UserCoursesPage />} />
+          <Route path={ROUTES.USER.PURCHASES} element={<UserPurchasesPage />} />
+          <Route path={ROUTES.USER.SETTINGS} element={<UserSettingsPage />} />
           <Route path="/auth/callback" element={<OAuthCallbackPage />} />
           {/* Admin Routes */}
           <Route path={ROUTES.ADMIN.DASHBOARD} element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />
@@ -90,7 +101,8 @@ const AppContent = () => {
           <Route path={ROUTES.ADMIN.USER_PROFILE(':id')} element={<AdminRoute><AdminUserProfilePage /></AdminRoute>} />
         </Routes>
       </main>
-      {!isAdminRoute && <Footer />}
+      {!isAdminRoute && !isUserDashboardRoute && <Footer />}
+      {!isAdminRoute && !isUserDashboardRoute && <WhatsAppButton />}
     </div>
   );
 };

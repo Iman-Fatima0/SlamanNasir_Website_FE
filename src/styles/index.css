@@ -48,6 +48,26 @@
   .admin-dashboard label {
     font-family: 'Imprima', 'Inter', system-ui, sans-serif !important;
   }
+
+  /* Override all text in user dashboard to use Inter (second font) */
+  .user-dashboard,
+  .user-dashboard *,
+  .user-dashboard h1,
+  .user-dashboard h2,
+  .user-dashboard h3,
+  .user-dashboard h4,
+  .user-dashboard h5,
+  .user-dashboard h6,
+  .user-dashboard p,
+  .user-dashboard span,
+  .user-dashboard div,
+  .user-dashboard button,
+  .user-dashboard input,
+  .user-dashboard select,
+  .user-dashboard textarea,
+  .user-dashboard label {
+    font-family: 'Inter', system-ui, sans-serif !important;
+  }
 }
 
 /* Custom utilities */
@@ -79,5 +99,51 @@ html {
 /* Hide scrollbar for IE and Edge */
 body {
   -ms-overflow-style: none;
+}
+
+/* Google Button Gradient Hover Effect */
+.google-button-gradient-hover {
+  position: relative;
+  overflow: hidden;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  transition: all 0.3s ease;
+}
+
+.google-button-gradient-hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(to right,
+    #4285F4 0%,
+    #4285F4 25%,
+    #34A853 25%,
+    #34A853 50%,
+    #FBBC05 50%,
+    #FBBC05 75%,
+    #EA4335 75%,
+    #EA4335 100%
+  );
+  opacity: 0;
+  transition: left 0.7s ease-in-out, opacity 0.3s ease;
+  z-index: 0;
+}
+
+.google-button-gradient-hover:hover::before {
+  left: 0%;
+  opacity: 0.15;
+}
+
+.google-button-gradient-hover .button-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #374151;
 }
 

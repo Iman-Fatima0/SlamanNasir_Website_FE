@@ -64,6 +64,78 @@ export class AuthService {
   }
 
   /**
+   * Update current user profile
+   * Note: Backend must have PUT /api/auth/me endpoint configured
+   */
+  static async updateProfile(userData) {
+    try {
+      const response = await apiClient.put(
+        API_ENDPOINTS.AUTH.ME,
+        userData
+      );
+
+      if (response.success === false) {
+        const error = new Error(response.message || 'Failed to update profile');
+        error.status = response.status;
+        throw error;
+      }
+
+      // Transform backend data to frontend format
+      return {
+        ...response,
+        data: {
+          ...response.data,
+          user: mapUser(response.data?.user),
+        },
+      };
+    } catch (error) {
+      // Preserve status code if available
+      if (error.status) {
+        throw error;
+      }
+      // If it's an axios error, extract status
+      if (error.response?.status) {
+        const newError = new Error(error.message || 'Failed to update profile');
+        newError.status = error.response.status;
+        throw newError;
+      }
+      throw error;
+    }
+  }
+
+  /**
+   * Change password (for authenticated users)
+   */
+  static async changePassword(passwordData) {
+    try {
+      const response = await apiClient.put(
+        API_ENDPOINTS.AUTH.CHANGE_PASSWORD,
+        passwordData
+      );
+
+      if (response.success === false) {
+        const error = new Error(response.message || 'Failed to change password');
+        error.status = response.status;
+        throw error;
+      }
+
+      return response;
+    } catch (error) {
+      // Preserve status code if available
+      if (error.status) {
+        throw error;
+      }
+      // If it's an axios error, extract status
+      if (error.response?.status) {
+        const newError = new Error(error.message || 'Failed to change password');
+        newError.status = error.response.status;
+        throw newError;
+      }
+      throw error;
+    }
+  }
+
+  /**
    * Request password reset
    */
   static async forgotPassword(email) {

@@ -15,6 +15,12 @@ export const ROUTES = {
   LOGIN: '/login',
   SIGNUP: '/signup',
   DASHBOARD: '/dashboard',
+  USER: {
+    PROFILE: '/dashboard/profile',
+    COURSES: '/dashboard/courses',
+    PURCHASES: '/dashboard/purchases',
+    SETTINGS: '/dashboard/settings',
+  },
   ADMIN: {
     DASHBOARD: '/admin',
     USERS: '/admin/users',

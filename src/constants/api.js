@@ -13,6 +13,7 @@ export const API_ENDPOINTS = {
     SIGNUP: '/auth/signup',
     ME: '/auth/me',
     LOGOUT: '/auth/logout',
+    CHANGE_PASSWORD: '/auth/change-password',
     FORGOT_PASSWORD: '/auth/forgot-password',
     RESET_PASSWORD: '/auth/reset-password',
     GOOGLE: '/auth/google',

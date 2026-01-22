@@ -54,7 +54,7 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center py-12 md:py-16 px-4 -mt-16 pt-28 md:-mt-20 md:pt-28">
+    <div className="min-h-screen bg-white flex items-center justify-center py-12 md:py-16 px-4 -mt-16 pt-36 md:-mt-20 md:pt-40">
       <div className="w-full max-w-md space-y-8">
         {/* Title */}
         <div className="text-center space-y-3">
@@ -149,31 +149,15 @@ export const LoginPage = () => {
             </div>
           </div>
 
-          {/* Social Icons */}
-          <div className="flex items-center justify-center gap-4">
-            <button
-              type="button"
-              onClick={() => handleOAuthLogin('linkedin')}
-              className="w-12 h-12 rounded-full bg-[#0077B5] flex items-center justify-center hover:bg-[#006399] transition-colors"
-              aria-label="Sign in with LinkedIn"
-            >
-              <span className="text-white font-bold text-sm">in</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleOAuthLogin('facebook')}
-              className="w-12 h-12 rounded-full bg-white border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
-              aria-label="Sign in with Facebook"
-            >
-              <span className="text-[#1877F2] font-bold text-lg">f</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleOAuthLogin('google')}
-              className="w-12 h-12 rounded-full bg-white border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
-              aria-label="Sign in with Google"
-            >
-              <svg className="w-6 h-6" viewBox="0 0 24 24">
+          {/* Google Sign In Button */}
+          <button
+            type="button"
+            onClick={() => handleOAuthLogin('google')}
+            className="w-full relative overflow-hidden flex items-center justify-center py-2.5 px-6 rounded-[50px] border border-gray-300 text-sm font-medium text-gray-700 bg-white google-button-gradient-hover"
+            aria-label="Sign in with Google"
+          >
+            <span className="button-content flex items-center gap-2">
+              <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path
                   fill="#4285F4"
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -191,18 +175,9 @@ export const LoginPage = () => {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                 />
               </svg>
-            </button>
-            <button
-              type="button"
-              onClick={() => handleOAuthLogin('apple')}
-              className="w-12 h-12 rounded-full bg-white border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
-              aria-label="Sign in with Apple"
-            >
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
-              </svg>
-            </button>
-          </div>
+              <span>Sign in with Google</span>
+            </span>
+          </button>
 
           {/* Create Account Link */}
           <div className="text-center mt-8">

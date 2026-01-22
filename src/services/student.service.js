@@ -12,20 +12,37 @@ export class StudentService {
    * Returns only courses the user has access to via valid orders/enrollments
    */
   static async getCourses() {
-    const response = await apiClient.get(API_ENDPOINTS.STUDENT.COURSES);
+    try {
+      const response = await apiClient.get(API_ENDPOINTS.STUDENT.COURSES);
 
-    if (response.success === false) {
-      throw new Error(response.message || 'Failed to fetch courses');
+      if (response.success === false) {
+        const error = new Error(response.message || 'Failed to fetch courses');
+        error.status = response.status;
+        throw error;
+      }
+
+      // Transform backend course data to frontend format
+      const rawCourses = response.data?.courses || response.data?.data?.courses || [];
+      const courses = mapCourses(rawCourses);
+
+      return {
+        courses,
+        ...response.data,
+      };
+    } catch (error) {
+      // Handle 500 errors with a more user-friendly message
+      const status = error.status || error.response?.status;
+      if (status === 500) {
+        const serverError = new Error('Server error. Please try again later or contact support if the problem persists.');
+        serverError.status = 500;
+        throw serverError;
+      }
+      // Preserve status if available
+      if (status && !error.status) {
+        error.status = status;
+      }
+      throw error;
     }
-
-    // Transform backend course data to frontend format
-    const rawCourses = response.data?.courses || response.data?.data?.courses || [];
-    const courses = mapCourses(rawCourses);
-
-    return {
-      courses,
-      ...response.data,
-    };
   }
 
   /**
@@ -70,13 +87,30 @@ export class StudentService {
    * Get all student enrollments
    */
   static async getEnrollments() {
-    const response = await apiClient.get(API_ENDPOINTS.STUDENT.ENROLLMENTS);
+    try {
+      const response = await apiClient.get(API_ENDPOINTS.STUDENT.ENROLLMENTS);
 
-    if (response.success === false) {
-      throw new Error(response.message || 'Failed to fetch enrollments');
+      if (response.success === false) {
+        const error = new Error(response.message || 'Failed to fetch enrollments');
+        error.status = response.status;
+        throw error;
+      }
+
+      return response.data;
+    } catch (error) {
+      // Handle 500 errors with a more user-friendly message
+      const status = error.status || error.response?.status;
+      if (status === 500) {
+        const serverError = new Error('Server error. Please try again later or contact support if the problem persists.');
+        serverError.status = 500;
+        throw serverError;
+      }
+      // Preserve status if available
+      if (status && !error.status) {
+        error.status = status;
+      }
+      throw error;
     }
-
-    return response.data;
   }
 
   /**

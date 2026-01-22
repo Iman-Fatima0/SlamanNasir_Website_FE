@@ -7,6 +7,16 @@ import { ROUTES } from '@/constants';
 
 export const CourseCard = ({ course }) => {
   const formatPrice = (price) => {
+    // Handle undefined, null, or invalid prices
+    if (price === undefined || price === null || isNaN(price)) {
+      return 'Free';
+    }
+    
+    // If price is 0, show "Free"
+    if (price === 0 || price === '0') {
+      return 'Free';
+    }
+    
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
@@ -48,7 +58,9 @@ export const CourseCard = ({ course }) => {
         {/* Price */}
         <div className="flex items-center justify-between mt-auto">
           <div>
-            <span className="text-3xl font-bold text-white">{formatPrice(course.price)}</span>
+            <span className="text-3xl font-bold text-white">
+              {formatPrice(course.price)}
+            </span>
           </div>
           <span className="text-sm font-medium text-white group-hover:text-[#2B211A] transition-colors flex items-center gap-1">
             View Details
