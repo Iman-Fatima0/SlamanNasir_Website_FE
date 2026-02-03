@@ -1,21 +1,145 @@
 /**
  * Course Learning Page - For enrolled students to access course content
+ * Lesson content display follows LESSON_CONTENT_DISPLAY.md:
+ * VIDEO → videoUrl, AUDIO → audioUrl, PDF → contentUrl, TEXT/QUIZ → textContent
  */
 
 import { useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { UserLayout } from '@/components/user/UserLayout';
 import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { ErrorMessage } from '@/components/common/ErrorMessage';
 import { StudentService } from '@/services';
-import { FiArrowLeft, FiPlay, FiCheck, FiLock, FiBook, FiClock } from 'react-icons/fi';
+import { FiArrowLeft, FiPlay, FiBook, FiClock } from 'react-icons/fi';
 import { ROUTES } from '@/constants';
+
+/**
+ * Normalize media URL so it loads from the frontend origin (proxy) in dev, avoiding CORS.
+ * If URL is absolute (e.g. http://localhost:3000/uploads/...), use path-only so the request goes through our proxy.
+ */
+function toMediaUrl(url) {
+  if (!url || typeof url !== 'string') return url;
+  const trimmed = url.trim();
+  if (!trimmed) return url;
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
+    try {
+      const u = new URL(trimmed);
+      return u.pathname + u.search;
+    } catch {
+      return url;
+    }
+  }
+  return trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
+}
+
+/**
+ * Renders lesson body by type. Branch on lesson.type; use videoUrl, audioUrl, contentUrl, or textContent.
+ * See LESSON_CONTENT_DISPLAY.md for field mapping.
+ */
+function LessonContent({ lesson }) {
+  if (!lesson) return null;
+
+  const type = (lesson.type || '').toUpperCase();
+  const videoSrc = lesson.videoUrl ? toMediaUrl(lesson.videoUrl) : '';
+  const audioSrc = lesson.audioUrl ? toMediaUrl(lesson.audioUrl) : '';
+  const pdfSrc = lesson.contentUrl ? toMediaUrl(lesson.contentUrl) : '';
+
+  if (type === 'VIDEO' && videoSrc) {
+    return (
+      <div className="mt-2">
+        <video
+          controls
+          src={videoSrc}
+          className="w-full max-w-2xl rounded-lg aspect-video bg-black"
+          crossOrigin="anonymous"
+          playsInline
+        >
+          Your browser does not support the video tag.
+        </video>
+        {lesson.textContent && (
+          <div
+            className="mt-4 text-gray-300 leading-relaxed prose max-w-none prose-invert"
+            dangerouslySetInnerHTML={{ __html: lesson.textContent }}
+          />
+        )}
+      </div>
+    );
+  }
+
+  if (type === 'AUDIO' && audioSrc) {
+    return (
+      <div className="mt-2 space-y-4">
+        <audio
+          controls
+          src={audioSrc}
+          className="w-full max-w-md"
+          crossOrigin="anonymous"
+        >
+          Your browser does not support the audio tag.
+        </audio>
+        {lesson.textContent && (
+          <div
+            className="text-gray-300 leading-relaxed prose max-w-none prose-invert"
+            dangerouslySetInnerHTML={{ __html: lesson.textContent }}
+          />
+        )}
+      </div>
+    );
+  }
+
+  if (type === 'PDF' && pdfSrc) {
+    return (
+      <div className="mt-2 space-y-4">
+        <iframe
+          src={pdfSrc}
+          title={lesson.title || 'PDF lesson'}
+          className="w-full h-[600px] rounded-lg border border-gray-700"
+        />
+        <a
+          href={pdfSrc}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center text-sm text-blue-400 hover:text-blue-300 underline"
+        >
+          Open PDF in new tab
+        </a>
+        {lesson.textContent && (
+          <div
+            className="mt-4 text-gray-300 leading-relaxed prose max-w-none prose-invert"
+            dangerouslySetInnerHTML={{ __html: lesson.textContent }}
+          />
+        )}
+      </div>
+    );
+  }
+
+  if ((type === 'TEXT' || type === 'QUIZ') && lesson.textContent) {
+    return (
+      <div className="mt-2 prose max-w-none prose-invert text-gray-300 leading-relaxed">
+        <div dangerouslySetInnerHTML={{ __html: lesson.textContent }} />
+      </div>
+    );
+  }
+
+  if (lesson.description) {
+    return (
+      <p className="mt-2 text-gray-300 leading-relaxed whitespace-pre-line">
+        {lesson.description}
+      </p>
+    );
+  }
+
+  return (
+    <p className="mt-2 text-gray-500">
+      No content available for this lesson.
+    </p>
+  );
+}
 
 const CourseLearningContent = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [selectedChapterIndex, setSelectedChapterIndex] = useState(0);
   const [selectedLessonIndex, setSelectedLessonIndex] = useState(0);
 
@@ -63,7 +187,7 @@ const CourseLearningContent = () => {
         <div className="mt-4 text-sm text-gray-300">
           <p className="mb-2">This course may not be available or you may not be enrolled yet.</p>
           <p className="text-xs text-gray-400">
-            If you recently purchased this course, please wait for admin verification. Once approved, the course will appear in "My Courses".
+            If you recently purchased this course, please wait for admin verification. Once approved, the course will appear in &quot;My Courses&quot;.
           </p>
         </div>
       );
@@ -263,38 +387,9 @@ const CourseLearningContent = () => {
                   )}
                 </div>
 
-                {/* Lesson Content */}
+                {/* Lesson Content – branches on lesson.type per LESSON_CONTENT_DISPLAY.md */}
                 <div className="prose max-w-none prose-invert">
-                  {selectedLesson.content ? (
-                    <div 
-                      className="text-gray-300 leading-relaxed"
-                      dangerouslySetInnerHTML={{ __html: selectedLesson.content }}
-                    />
-                  ) : selectedLesson.description ? (
-                    <p className="text-gray-300 leading-relaxed whitespace-pre-line">
-                      {selectedLesson.description}
-                    </p>
-                  ) : (
-                    <div className="text-center py-12 text-gray-500">
-                      <p>Lesson content will be available here.</p>
-                      <p className="text-sm mt-2">Video, text, or interactive content will appear in this area.</p>
-                    </div>
-                  )}
-
-                  {/* Video URL if available */}
-                  {selectedLesson.videoUrl && (
-                    <div className="mt-6">
-                      <div className="aspect-video bg-black rounded-lg overflow-hidden">
-                        <video
-                          src={selectedLesson.videoUrl}
-                          controls
-                          className="w-full h-full"
-                        >
-                          Your browser does not support the video tag.
-                        </video>
-                      </div>
-                    </div>
-                  )}
+                  <LessonContent lesson={selectedLesson} />
                 </div>
 
                 {/* Navigation Buttons */}

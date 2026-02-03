@@ -2,15 +2,15 @@
  * User Purchases Page
  */
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueries, useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { UserLayout } from '@/components/user/UserLayout';
 import { ProtectedRoute } from '@/components/common/ProtectedRoute';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { ErrorMessage } from '@/components/common/ErrorMessage';
-import { StudentService } from '@/services';
+import { StudentService, CoursesService } from '@/services';
 import { FiShoppingBag, FiRefreshCw, FiExternalLink } from 'react-icons/fi';
 import { Button } from '@/components/common/Button';
-import { useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '@/constants';
 
@@ -169,12 +169,62 @@ const UserPurchasesContent = () => {
     });
   }
   
+  // Build a lookup of courseId -> course from student courses (so we can show course name when order only has courseId)
+  const coursesById = new Map();
+  (coursesData?.courses || []).forEach((c) => {
+    const id = c.id || c.courseId;
+    if (id) coursesById.set(id, c);
+  });
+  // Also from enrollments (in case course details are there)
+  (enrollmentsData?.enrollments || enrollmentsData?.data?.enrollments || []).forEach((en) => {
+    const course = en.course;
+    if (course) {
+      const id = course.id || course.courseId || en.courseId;
+      if (id && !coursesById.has(id)) coursesById.set(id, course);
+    }
+  });
+
   // Convert map to array and sort by date (newest first)
   orders = Array.from(ordersMap.values()).sort((a, b) => {
     const dateA = new Date(a.createdAt || 0);
     const dateB = new Date(b.createdAt || 0);
     return dateB - dateA;
   });
+
+  // Enrich each order with course title/thumbnail when we have courseId but missing course details
+  orders.forEach((order) => {
+    const cid = order.courseId || order.course?.id;
+    if (cid && !order.course?.title && coursesById.has(cid)) {
+      const fullCourse = coursesById.get(cid);
+      order.course = {
+        ...(order.course || {}),
+        id: fullCourse.id || cid,
+        title: fullCourse.title,
+        subtitle: fullCourse.subtitle,
+        thumbnailUrl: fullCourse.thumbnailUrl || order.course?.thumbnailUrl,
+      };
+    }
+  });
+
+  // For any order still missing course details (e.g. previous purchases), fetch course by ID from public API
+  const missingCourseIds = [...new Set(orders.filter((o) => (o.courseId || o.course?.id) && !o.course?.title).map((o) => o.courseId || o.course?.id))];
+  const courseDetailQueries = useQueries({
+    queries: missingCourseIds.map((id) => ({
+      queryKey: ['courseForPurchase', id],
+      queryFn: () => CoursesService.getCourseById(id),
+      enabled: !!id,
+      retry: 1,
+      staleTime: 5 * 60 * 1000,
+    })),
+  });
+  const fetchedCoursesById = useMemo(() => {
+    const m = new Map();
+    courseDetailQueries.forEach((q) => {
+      const id = q?.queryKey?.[1];
+      if (q?.data?.data?.course && id) m.set(id, q.data.data.course);
+    });
+    return m;
+  }, [courseDetailQueries]);
 
   // Determine error state: Only show error if both endpoints failed
   // If we have data from either source, don't show error
@@ -306,30 +356,34 @@ const UserPurchasesContent = () => {
                         {orders.map((order) => {
                           const isApproved = order.status === 'approved' || order.status === 'completed';
                           const courseId = order.course?.id || order.courseId;
+                          // Use enriched/fetched course so every purchase shows name (including previous orders)
+                          const displayCourse = order.course?.title
+                            ? order.course
+                            : fetchedCoursesById.get(courseId) || order.course;
 
                           return (
                             <tr key={order.id} className="hover:bg-gray-800/50">
                               <td className="px-6 py-4">
                                 <div className="flex items-center gap-3">
-                                  {order.course?.thumbnailUrl && (
+                                  {(displayCourse?.thumbnailUrl || order.course?.thumbnailUrl) && (
                                     <img
-                                      src={order.course.thumbnailUrl}
-                                      alt={order.course?.title || 'Course'}
+                                      src={displayCourse?.thumbnailUrl || order.course?.thumbnailUrl}
+                                      alt={displayCourse?.title || order.course?.title || 'Course'}
                                       className="w-16 h-16 rounded-lg object-cover border border-gray-700"
                                     />
                                   )}
                                   <div className="flex-1 min-w-0">
                                     <div className="text-sm font-semibold text-white mb-1">
-                                      {order.course?.title || order.courseId || 'N/A'}
+                                      {displayCourse?.title || order.course?.title || order.courseId || 'N/A'}
                                     </div>
-                                    {order.course?.subtitle && (
+                                    {(displayCourse?.subtitle || order.course?.subtitle) && (
                                       <div className="text-xs text-gray-400 line-clamp-2">
-                                        {order.course.subtitle}
+                                        {displayCourse?.subtitle || order.course?.subtitle}
                                       </div>
                                     )}
-                                    {order.courseId && !order.course?.title && (
+                                    {courseId && !displayCourse?.title && !order.course?.title && (
                                       <div className="text-xs text-gray-500">
-                                        Course ID: {order.courseId}
+                                        Course ID: {courseId}
                                       </div>
                                     )}
                                   </div>

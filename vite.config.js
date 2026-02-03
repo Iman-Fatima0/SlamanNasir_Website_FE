@@ -19,6 +19,12 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      // Media (video/audio/PDF) are served by the backend; proxy so relative URLs work from frontend
+      '/uploads': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 });

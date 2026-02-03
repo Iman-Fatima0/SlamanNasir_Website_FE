@@ -192,7 +192,7 @@ export const CurriculumBuilder = ({ courseId, chapters = [], onUpdate }) => {
                           placeholder="Lesson Title"
                         />
                         <select
-                          value={lesson.type || 'video'}
+                          value={(lesson.type || 'video').toString().toLowerCase()}
                           onChange={(e) => handleUpdateLesson(section.id, lesson.id, 'type', e.target.value)}
                           className="px-3 py-1 bg-gray-900 border border-gray-700 rounded text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >

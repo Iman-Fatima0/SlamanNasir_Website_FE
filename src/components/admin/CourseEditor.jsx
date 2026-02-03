@@ -57,7 +57,18 @@ export const CourseEditor = ({ course, onSave, onCancel }) => {
   };
 
   const handleSave = () => {
-    onSave(formData);
+    // Normalize lesson types to uppercase for API (backend expects VIDEO, AUDIO, PDF, TEXT, QUIZ)
+    const payload = {
+      ...formData,
+      chapters: (formData.chapters || []).map((ch) => ({
+        ...ch,
+        lessons: (ch.lessons || []).map((lesson) => ({
+          ...lesson,
+          type: (lesson.type || 'video').toString().toUpperCase(),
+        })),
+      })),
+    };
+    onSave(payload);
   };
 
   const tabs = [

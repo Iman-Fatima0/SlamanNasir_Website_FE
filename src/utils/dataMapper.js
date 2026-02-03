@@ -61,14 +61,23 @@ export const mapCourse = (course) => {
       avatarUrl: inst.avatarUrl || '',
       role: inst.CourseInstructor?.role || 'secondary',
     })),
-    chapters: (course.chapters || []).map(chapter => ({
+    // Support chapters, curriculum, or sections from API (admin edit flow must see saved data)
+    chapters: (course.chapters || course.curriculum || course.sections || []).map((chapter) => ({
+      id: chapter.id,
+      title: chapter.title || '',
       ...chapter,
-      lessons: (chapter.lessons || []).map(lesson => ({
+      lessons: (chapter.lessons || []).map((lesson) => ({
         id: lesson.id,
         title: lesson.title || 'Untitled Lesson',
-        duration: lesson.duration,
-        // Don't include 'type' field if it doesn't exist in backend
-        ...(lesson.type && { type: lesson.type }),
+        duration: lesson.duration ?? lesson.durationMinutes,
+        // Normalized lesson type (preserve API value; admin UI normalizes to lowercase for select)
+        type: lesson.type || lesson.lessonType || lesson.lesson_type || 'video',
+        // Rich content fields – support both camelCase and snake_case from API
+        textContent: lesson.textContent ?? lesson.text_content ?? '',
+        contentUrl: lesson.contentUrl ?? lesson.content_url ?? '',
+        videoUrl: lesson.videoUrl ?? lesson.video_url ?? '',
+        audioUrl: lesson.audioUrl ?? lesson.audio_url ?? '',
+        description: lesson.description ?? '',
       })),
     })),
     createdAt: course.createdAt,

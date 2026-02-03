@@ -127,8 +127,24 @@ export class AuthService {
       }
       // If it's an axios error, extract status
       if (error.response?.status) {
-        const newError = new Error(error.message || 'Failed to change password');
-        newError.status = error.response.status;
+        const status = error.response.status;
+        let message = error.message || 'Failed to change password';
+        
+        // Provide specific error messages for common status codes
+        if (status === 404) {
+          message = 'Password change endpoint not found. Please contact support or use the "Forgot Password" feature.';
+        } else if (status === 401) {
+          message = 'Your session has expired. Please log in again.';
+        } else if (status === 403) {
+          message = 'You do not have permission to change your password.';
+        } else if (status === 400) {
+          message = error.response.data?.message || 'Invalid password. Please check your current password and try again.';
+        } else if (status >= 500) {
+          message = 'Server error. Please try again later or contact support.';
+        }
+        
+        const newError = new Error(message);
+        newError.status = status;
         throw newError;
       }
       throw error;

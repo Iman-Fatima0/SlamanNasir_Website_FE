@@ -92,7 +92,15 @@ const UserSettingsContent = () => {
         setPasswordError(response.message || 'Failed to change password');
       }
     } catch (err) {
-      setPasswordError(err.message || 'Failed to change password. Please try again.');
+      // Show specific error message from the service
+      let errorMessage = err.message || 'Failed to change password. Please try again.';
+      
+      // If it's a 404, provide additional guidance
+      if (err.status === 404) {
+        errorMessage = 'Password change feature is currently unavailable. Please use the "Forgot Password" link on the login page to reset your password, or contact support for assistance.';
+      }
+      
+      setPasswordError(errorMessage);
     } finally {
       setIsChangingPassword(false);
     }

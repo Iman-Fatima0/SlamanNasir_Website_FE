@@ -14,9 +14,9 @@ export const LessonEditor = ({ lesson, onUpdate, onClose }) => {
   const [showPreview, setShowPreview] = useState(false);
   const fileInputRef = useRef(null);
 
-  const lessonType = lesson?.type?.toLowerCase() || 'video';
+  const lessonType = (lesson?.type ?? 'video').toString().toLowerCase();
 
-  // Get the appropriate URL field based on lesson type
+  // Get the appropriate URL/content field based on lesson type
   const getUrlField = () => {
     switch (lessonType) {
       case 'video':
@@ -28,9 +28,8 @@ export const LessonEditor = ({ lesson, onUpdate, onClose }) => {
       case 'image':
         return 'contentUrl';
       case 'text':
-        return 'textContent';
       case 'quiz':
-        return 'contentUrl';
+        return 'textContent';
       default:
         return 'videoUrl';
     }
