@@ -1,25 +1,23 @@
 /**
- * Admin Settings Page - General, Payments, Emails, Storage, Security, Legal
+ * Admin Settings Page - Settings sections
  */
 
 import { useState } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { FiSettings, FiCreditCard, FiMail, FiDatabase, FiShield, FiFileText } from 'react-icons/fi';
-import { GeneralSettingsContent } from '@/components/admin/settings/GeneralSettings';
-import { PaymentsSettingsContent } from '@/components/admin/settings/PaymentsSettings';
-import { EmailsSettingsContent } from '@/components/admin/settings/EmailsSettings';
-import { StorageSettingsContent } from '@/components/admin/settings/StorageSettings';
+import { FiShield, FiFileText } from 'react-icons/fi';
 import { SecuritySettingsContent } from '@/components/admin/settings/SecuritySettings';
 import { LegalSettingsContent } from '@/components/admin/settings/LegalSettings';
 
 const AdminSettingsContent = () => {
-  const [activeTab, setActiveTab] = useState('general');
+  // Default to Security tab since General/Payments/Emails/Storage are temporarily disabled
+  const [activeTab, setActiveTab] = useState('security');
 
+  // Temporarily show only Security and Legal sections
   const tabs = [
-    { id: 'general', label: 'General', icon: FiSettings },
-    { id: 'payments', label: 'Payments', icon: FiCreditCard },
-    { id: 'emails', label: 'Emails', icon: FiMail },
-    { id: 'storage', label: 'Storage', icon: FiDatabase },
+    // { id: 'general', label: 'General', icon: FiSettings },
+    // { id: 'payments', label: 'Payments', icon: FiCreditCard },
+    // { id: 'emails', label: 'Emails', icon: FiMail },
+    // { id: 'storage', label: 'Storage', icon: FiDatabase },
     { id: 'security', label: 'Security', icon: FiShield },
     { id: 'legal', label: 'Legal', icon: FiFileText },
   ];
@@ -71,10 +69,12 @@ const AdminSettingsContent = () => {
               </div>
 
               {/* Render different content based on active tab */}
+              {/* Temporarily disabled:
               {activeTab === 'general' && <GeneralSettingsContent />}
               {activeTab === 'payments' && <PaymentsSettingsContent />}
               {activeTab === 'emails' && <EmailsSettingsContent />}
               {activeTab === 'storage' && <StorageSettingsContent />}
+              */}
               {activeTab === 'security' && <SecuritySettingsContent />}
               {activeTab === 'legal' && <LegalSettingsContent />}
             </div>

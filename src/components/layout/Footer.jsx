@@ -112,24 +112,23 @@ export const Footer = () => {
 
       {/* Footer Content - Overlay on top */}
       <div
-        className={`relative z-20 container mx-auto px-4 sm:px-6 lg:px-8 ${
+        className={`relative z-20 container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl ${
           isHomePage ? 'pt-20 pb-28' : 'py-20'
         }`}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Brand */}
-          <div>
-            <h3 className={`text-2xl font-bold mb-4 ${textColor}`}>Salman Nasir</h3>
-            <p className={`text-sm ${textColor} ${isHomePage ? 'opacity-100' : 'opacity-80'}`}>
-              Learn Arabic with expert instructors. Master the language through
-              comprehensive courses designed for all levels.
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 items-start">
+          {/* Brand - Salman Nasir + tagline */}
+          <div className="min-w-0">
+            <h3 className={`text-2xl font-bold mb-3 ${textColor}`}>Salman Nasir</h3>
+            <p className={`text-sm leading-relaxed max-w-xs ${textColor} ${isHomePage ? 'opacity-100' : 'opacity-80'}`}>
+              Learn Arabic with expert instructors. Master the language through comprehensive courses designed for all levels.
             </p>
           </div>
 
           {/* Company */}
-          <div>
-            <h4 className={`font-semibold mb-4 ${textColor}`}>Company</h4>
-            <ul className="space-y-2">
+          <div className="min-w-0">
+            <h4 className={`text-sm font-semibold uppercase tracking-wider mb-4 ${textColor}`}>Company</h4>
+            <ul className="space-y-2.5">
               {footerLinks.company.map((link) => (
                 <li key={link.path}>
                   <Link
@@ -144,11 +143,11 @@ export const Footer = () => {
           </div>
 
           {/* Resources */}
-          <div>
-            <h4 className={`font-semibold mb-4 ${textColor}`}>Resources</h4>
-            <ul className="space-y-2">
+          <div className="min-w-0">
+            <h4 className={`text-sm font-semibold uppercase tracking-wider mb-4 ${textColor}`}>Resources</h4>
+            <ul className="space-y-2.5">
               {footerLinks.resources.map((link) => (
-                <li key={link.path}>
+                <li key={`${link.path}-${link.label}`}>
                   <Link
                     to={link.path}
                     className={`text-sm ${textColor} ${isHomePage ? 'opacity-100 hover:text-gray-400' : 'opacity-80 hover:opacity-100'} transition-colors`}
@@ -160,10 +159,10 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Legal */}
-          <div>
-            <h4 className={`font-semibold mb-4 ${textColor}`}>Legal</h4>
-            <ul className="space-y-2">
+          {/* Legal - Privacy Policy, Terms of Service */}
+          <div className="min-w-0">
+            <h4 className={`text-sm font-semibold uppercase tracking-wider mb-4 ${textColor}`}>Legal</h4>
+            <ul className="space-y-2.5">
               {footerLinks.legal.map((link) => (
                 <li key={link.path}>
                   <Link
